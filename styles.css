@@ -91,6 +91,15 @@ header {
   color: var(--muted);
 }
 
+.nav-links select {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #0f141b;
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
 .nav-links a {
   transition: color 0.2s ease;
 }
