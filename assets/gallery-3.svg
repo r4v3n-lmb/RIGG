@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Gallery placeholder">
+  <defs>
+    <linearGradient id="d" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f141a"/>
+      <stop offset="100%" stop-color="#22303d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#d)"/>
+  <g fill="none" stroke="#74d9ff" stroke-opacity="0.4" stroke-width="2">
+    <circle cx="360" cy="420" r="160"/>
+    <circle cx="660" cy="420" r="160"/>
+    <circle cx="960" cy="420" r="160"/>
+  </g>
+  <text x="120" y="700" font-family="Space Grotesk, Arial, sans-serif" font-size="20" fill="#cfefff" opacity="0.8">RIGG COMPONENT VIEW</text>
+</svg>

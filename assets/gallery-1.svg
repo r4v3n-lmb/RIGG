@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Gallery placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141820"/>
+      <stop offset="100%" stop-color="#242d38"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g)"/>
+  <g fill="none" stroke="#9de6ff" stroke-opacity="0.35" stroke-width="2">
+    <rect x="120" y="140" width="960" height="520" rx="26"/>
+    <path d="M240 520 L460 340 L640 520 L780 400 L960 520"/>
+  </g>
+  <circle cx="330" cy="310" r="52" fill="#89dfff" fill-opacity="0.3"/>
+  <text x="120" y="720" font-family="Space Grotesk, Arial, sans-serif" font-size="20" fill="#cfefff" opacity="0.8">RIGG DETAIL VIEW</text>
+</svg>
