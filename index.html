@@ -26,6 +26,12 @@
           <a href="#video">Video</a>
           <a href="#gallery">Gallery</a>
           <a href="#preorder">Pre-Order</a>
+          <select id="header-currency" aria-label="Currency">
+            <option value="USD">USD</option>
+            <option value="GBP">GBP</option>
+            <option value="EUR">EUR</option>
+            <option value="ZAR">ZAR</option>
+          </select>
         </nav>
       </div>
     </header>
@@ -245,6 +251,7 @@
       const status = document.getElementById("form-status");
       const priceDisplay = document.getElementById("price-display");
       const currencySelect = document.getElementById("currency");
+      const headerCurrencySelect = document.getElementById("header-currency");
 
       const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
       const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
@@ -254,9 +261,9 @@
 
       const priceMap = {
         USD: 25,
-        GBP: 20,
-        EUR: 23,
-        ZAR: 450,
+        GBP: 19.99,
+        EUR: 254.99,
+        ZAR: 399.99,
       };
 
       const currencyByRegion = {
@@ -289,14 +296,20 @@
       };
 
       const updatePrice = () => {
-        const currency = currencySelect.value;
+        const currency = headerCurrencySelect.value;
         priceDisplay.textContent = formatPrice(currency);
+        currencySelect.value = currency;
       };
 
-      currencySelect.value = getRegionCurrency();
+      headerCurrencySelect.value = getRegionCurrency();
+      currencySelect.value = headerCurrencySelect.value;
       updatePrice();
 
-      currencySelect.addEventListener("change", updatePrice);
+      headerCurrencySelect.addEventListener("change", updatePrice);
+      currencySelect.addEventListener("change", () => {
+        headerCurrencySelect.value = currencySelect.value;
+        updatePrice();
+      });
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
