@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-label="Video poster placeholder">
+  <rect width="1280" height="720" fill="#151a21"/>
+  <circle cx="640" cy="360" r="120" fill="#80e1ff" fill-opacity="0.2"/>
+  <polygon points="610,300 720,360 610,420" fill="#bfefff"/>
+  <text x="80" y="640" font-family="Space Grotesk, Arial, sans-serif" font-size="22" fill="#cfefff" opacity="0.8">RIGG TEASER VIDEO</text>
+</svg>

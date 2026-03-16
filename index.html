@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0e1116" />
+    <meta name="description" content="RIGG Core V2 pre-order page" />
+    <title>RIGG Core V2 | Pre-Order</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container nav">
+        <div class="logo">
+          <img class="logo-icon" src="assets/rigg-logo.png" alt="RIGG icon" />
+          RIGG
+        </div>
+        <nav class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#video">Video</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#preorder">Pre-Order</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="container hero">
+        <div>
+          <p class="badge">Limited launch batch · Ships April 30, 2026</p>
+          <h1>Core V2 is the sleek magnetic gym bag built for essentials.</h1>
+          <p>
+            RIGG Core V2 keeps your must-haves secure without bulky bags or stuffed pockets.
+            It is built for gym goers who want zero clutter, zero noise, and full control.
+          </p>
+          <div class="price">
+            <span id="price-display">$25.00</span>
+            <small>Refundable pre-order deposit</small>
+          </div>
+          <div class="hero-actions">
+            <a class="button primary" href="#preorder">Reserve yours</a>
+            <a class="button secondary" href="#video">Watch the teaser</a>
+          </div>
+          <div class="badges">
+            <span class="badge">Magnetic attachment</span>
+            <span class="badge">Minimalist essentials carry</span>
+            <span class="badge">Smart organized storage</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <img src="assets/hero.svg" alt="RIGG product hero" />
+        </div>
+      </section>
+
+      <section id="features" class="section">
+        <div class="container">
+          <h2>Designed for clean, confident gym sessions.</h2>
+          <p class="lead">
+            Core V2 keeps essentials exactly where you need them while preventing clutter,
+            cross-contamination, and the stress of loose gear.
+          </p>
+          <div class="grid">
+            <div class="card">
+              <h3>Magnetic attachment</h3>
+              <p>Locks to racks and benches to keep your gear off dirty surfaces.</p>
+            </div>
+            <div class="card">
+              <h3>Minimalist carry</h3>
+              <p>Carry only what matters: keys, phone, straps, bottle, and towel.</p>
+            </div>
+            <div class="card">
+              <h3>Smart organization</h3>
+              <p>Dedicated pockets keep items separated, clean, and easy to reach.</p>
+            </div>
+            <div class="card">
+              <h3>Gym-safe materials</h3>
+              <p>Durable, wipe-clean shell with a moisture-resistant interior.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="video" class="section">
+        <div class="container">
+          <h2>Watch the product in motion.</h2>
+          <p class="lead">A quick 38-second overview of the magnetic system and storage layout.</p>
+          <div class="video-wrap">
+            <video controls poster="assets/teaser-poster.svg">
+              <source src="assets/teaser.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <p class="notice">Replace `assets/teaser.mp4` with your actual teaser video file.</p>
+        </div>
+      </section>
+
+      <section id="gallery" class="section">
+        <div class="container">
+          <h2>Gallery</h2>
+          <p class="lead">Close-ups, UI previews, and the modular system.</p>
+          <div class="gallery">
+            <img src="assets/gallery-1.svg" alt="RIGG detail view" />
+            <img src="assets/gallery-2.svg" alt="RIGG signal UI" />
+            <img src="assets/gallery-3.svg" alt="RIGG component view" />
+          </div>
+        </div>
+      </section>
+
+      <section id="preorder" class="section">
+        <div class="container preorder">
+          <div>
+          <h2>Reserve your Core V2 today.</h2>
+          <p class="lead">
+            Secure a launch unit with a fully refundable deposit. We will email updates as we
+            finalize production and shipping timelines.
+          </p>
+          <div class="badges">
+            <span class="badge">Refundable deposit</span>
+            <span class="badge">Ships worldwide</span>
+            <span class="badge">Launch ship date: April 30, 2026</span>
+          </div>
+        </div>
+        <form class="form" id="preorder-form">
+          <div>
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="Your name" required />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div>
+            <label for="currency">Currency</label>
+            <select id="currency" name="currency">
+              <option value="USD">USD (US Dollar)</option>
+              <option value="GBP">GBP (British Pound)</option>
+              <option value="EUR">EUR (Euro)</option>
+              <option value="ZAR">ZAR (South African Rand)</option>
+            </select>
+          </div>
+          <div>
+            <label for="quantity">Quantity</label>
+            <select id="quantity" name="quantity">
+              <option value="1">1 unit</option>
+              <option value="2">2 units</option>
+              <option value="3">3 units</option>
+            </select>
+          </div>
+          <button class="button primary" type="submit">Pre-order now</button>
+          <p class="notice" id="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+    <footer>
+      <div class="container footer-grid">
+        <div>
+          <div class="logo">
+            <img class="logo-icon" src="assets/rigg-logo.png" alt="RIGG icon" />
+            RIGG
+          </div>
+          <p class="small">Minimal, bold carry for gym essentials.</p>
+        </div>
+        <div>
+          <p class="small">Follow updates</p>
+          <div class="socials">
+            <a href="https://x.com" aria-label="X">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4l16 16M20 4L4 20" />
+              </svg>
+            </a>
+            <a href="https://instagram.com" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17" cy="7" r="1.2" />
+              </svg>
+            </a>
+            <a href="https://youtube.com" aria-label="YouTube">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 5 12 5 12 5s-6 0-7.7.3A2.7 2.7 0 0 0 2.4 7.2C2 8.9 2 12 2 12s0 3.1.4 4.8a2.7 2.7 0 0 0 1.9 1.9C6 19 12 19 12 19s6 0 7.7-.3a2.7 2.7 0 0 0 1.9-1.9c.4-1.7.4-4.8.4-4.8s0-3.1-.4-4.8Z" />
+                <path d="M10 9.8v4.4l4-2.2-4-2.2Z" fill="#0e1116" />
+              </svg>
+            </a>
+            <a href="https://tiktok.com" aria-label="TikTok">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 5a4 4 0 0 0 4 4" />
+                <path d="M9 9v7a3 3 0 1 1-3-3" />
+                <path d="M9 9a6 6 0 0 0 6 6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <p class="small">Contact</p>
+          <p class="small">hello@rigg.io</p>
+          <p class="small">Shipping updates every two weeks.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const form = document.getElementById("preorder-form");
+      const status = document.getElementById("form-status");
+      const priceDisplay = document.getElementById("price-display");
+      const currencySelect = document.getElementById("currency");
+
+      const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
+      const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+      const SEND_CONFIRMATION_URL = `${SUPABASE_URL}/functions/v1/send-confirmation`;
+
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const priceMap = {
+        USD: 25,
+        GBP: 20,
+        EUR: 23,
+        ZAR: 450,
+      };
+
+      const currencyByRegion = {
+        US: "USD",
+        GB: "GBP",
+        IE: "EUR",
+        DE: "EUR",
+        FR: "EUR",
+        ES: "EUR",
+        IT: "EUR",
+        NL: "EUR",
+        ZA: "ZAR",
+      };
+
+      const getRegionCurrency = () => {
+        const locale = navigator.language || "en-US";
+        const parts = locale.split("-");
+        if (parts.length > 1 && currencyByRegion[parts[1].toUpperCase()]) {
+          return currencyByRegion[parts[1].toUpperCase()];
+        }
+        return "USD";
+      };
+
+      const formatPrice = (currency) => {
+        const amount = priceMap[currency] ?? priceMap.USD;
+        return new Intl.NumberFormat(navigator.language || "en-US", {
+          style: "currency",
+          currency,
+        }).format(amount);
+      };
+
+      const updatePrice = () => {
+        const currency = currencySelect.value;
+        priceDisplay.textContent = formatPrice(currency);
+      };
+
+      currencySelect.value = getRegionCurrency();
+      updatePrice();
+
+      currencySelect.addEventListener("change", updatePrice);
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = {
+          name: form.name.value.trim(),
+          email: form.email.value.trim(),
+          currency: currencySelect.value,
+          quantity: form.quantity.value,
+          locale: navigator.language || "en-US",
+          region: (navigator.language || "en-US").split("-")[1] || "US",
+        };
+
+        if (!data.name || !data.email) {
+          status.textContent = "Please provide your name and email.";
+          return;
+        }
+
+        status.textContent = "Submitting your pre-order...";
+
+        try {
+          const insertResponse = await supabase.from("preorders").insert([data]);
+
+          if (insertResponse.error) {
+            throw new Error(insertResponse.error.message);
+          }
+
+          await fetch(SEND_CONFIRMATION_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            },
+            body: JSON.stringify({ name: data.name, email: data.email }),
+          });
+
+          status.textContent = "Thanks for reserving. We will reach out within 24 hours.";
+          form.reset();
+          currencySelect.value = getRegionCurrency();
+          updatePrice();
+        } catch (error) {
+          status.textContent = "Something went wrong. Please try again.";
+        }
+      });
+    </script>
+  </body>
+</html>
