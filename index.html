@@ -42,17 +42,19 @@
       <section class="container hero">
         <div>
           <p class="kicker">Limited launch batch · Ships April 30, 2026</p>
-          <h1>Core V2 is the magnetic gym bag built for essential carry.</h1>
+          <h1>CORE V2 - Founders Edition</h1>
+          <p class="slogan" hidden>Everything You Need. Nothing You Don't.</p>
           <p>
             Keep phone, keys, straps, and bottle locked in place with zero bulk. Fast access,
             clean flow, and no clutter between sets.
           </p>
           <div class="price">
-            <span id="price-display">$25.00</span>
+            <span id="price-display">—</span>
             <small>Refundable pre-order deposit</small>
           </div>
           <div class="hero-actions">
             <a class="button primary" href="#preorder">Reserve yours</a>
+            <a class="button secondary" href="#features">Learn more</a>
           </div>
         </div>
         <div class="hero-card">
@@ -85,11 +87,19 @@
         <div class="container compact">
           <h2>How it works</h2>
           <div class="steps">
-            <span>Attach</span>
-            <span>Store</span>
-            <span>Move</span>
+            <div class="step">
+              <span>Attach</span>
+              <small>Snap to racks or benches.</small>
+            </div>
+            <div class="step">
+              <span>Store</span>
+              <small>Separate clean and used gear.</small>
+            </div>
+            <div class="step">
+              <span>Move</span>
+              <small>Lift and carry in one motion.</small>
+            </div>
           </div>
-          <p class="lead">Repeat the flow from locker to lift without repacking.</p>
         </div>
       </section>
 
@@ -115,6 +125,9 @@
             <img src="assets/gallery-1.svg" alt="RIGG detail view" />
             <img src="assets/gallery-2.svg" alt="RIGG signal UI" />
             <img src="assets/gallery-3.svg" alt="RIGG component view" />
+            <img src="assets/gallery-1.svg" alt="RIGG magnetic dock" />
+            <img src="assets/gallery-2.svg" alt="RIGG storage layout" />
+            <img src="assets/gallery-3.svg" alt="RIGG carry profile" />
           </div>
         </div>
       </section>
@@ -122,8 +135,33 @@
       <section id="preorder" class="section">
         <div class="container preorder">
           <div>
-          <h2>Reserve your Core V2 today.</h2>
-          <p class="lead">Secure a launch unit with a refundable deposit. We will send updates as production locks.</p>
+          <h2>Founders Edition Pre-Order</h2>
+          <p class="lead">CORE V2 — Founder Drop. Limited to the first 50 orders.</p>
+          <div class="founder-meta">
+            <div class="founder-counter">
+              <span class="counter-value">23</span>
+              <span class="counter-total">/50 Units Claimed</span>
+            </div>
+            <div class="founder-benefits">
+              <span>Discounted price</span>
+              <span>Early access</span>
+              <span>Founders edition (special logo colour)</span>
+            </div>
+          </div>
+          <div class="founder-pricing">
+            <div>
+              <span class="label">Founder Price</span>
+              <span id="full-price">—</span>
+            </div>
+            <div>
+              <span class="label">Original Price</span>
+              <span id="original-price" class="strikethrough">—</span>
+            </div>
+            <div>
+              <span class="label">Deposit (Pre-Order)</span>
+              <span id="deposit-price">—</span>
+            </div>
+          </div>
         </div>
         <form class="form" id="preorder-form">
           <div>
@@ -145,11 +183,7 @@
           </div>
           <div>
             <label for="quantity">Quantity</label>
-            <select id="quantity" name="quantity">
-              <option value="1">1 unit</option>
-              <option value="2">2 units</option>
-              <option value="3">3 units</option>
-            </select>
+            <input id="quantity" name="quantity" type="number" value="1" readonly />
           </div>
           <button class="button primary" type="submit">Pre-order now</button>
           <p class="notice" id="form-status" aria-live="polite"></p>
@@ -163,20 +197,58 @@
         <div class="logo">
           <img class="logo-icon" src="assets/rigg-logo.png" alt="RIGG icon" />
         </div>
-        <p class="small">Minimal, bold carry for gym essentials.</p>
+        <p class="small">Everything You Need. Nothing You Don't.</p>
         <div class="footer-links">
           <a href="#features">Features</a>
           <a href="#preorder">Pre-Order</a>
-          <a href="mailto:hello@rigg.io">hello@rigg.io</a>
+        </div>
+        <a class="footer-email" href="mailto:noreply.rigg@gmail.com" aria-label="Email RIGG">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16v12H4z" />
+            <path d="m22 7-10 7L2 7" />
+          </svg>
+        </a>
+        <div class="footer-socials">
+          <a href="https://x.com" aria-label="X">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4l16 16M20 4L4 20" />
+            </svg>
+          </a>
+          <a href="https://instagram.com" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17" cy="7" r="1.2" />
+            </svg>
+          </a>
+          <a href="https://youtube.com" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.6 7.2a2.7 2.7 0 0 0-1.9-1.9C18 5 12 5 12 5s-6 0-7.7.3A2.7 2.7 0 0 0 2.4 7.2C2 8.9 2 12 2 12s0 3.1.4 4.8a2.7 2.7 0 0 0 1.9 1.9C6 19 12 19 12 19s6 0 7.7-.3a2.7 2.7 0 0 0 1.9-1.9c.4-1.7.4-4.8.4-4.8s0-3.1-.4-4.8Z" />
+              <path d="M10 9.8v4.4l4-2.2-4-2.2Z" fill="#0e1116" />
+            </svg>
+          </a>
+          <a href="https://tiktok.com" aria-label="TikTok">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 5a4 4 0 0 0 4 4" />
+              <path d="M9 9v7a3 3 0 1 1-3-3" />
+              <path d="M9 9a6 6 0 0 0 6 6" />
+            </svg>
+          </a>
         </div>
       </div>
     </footer>
 
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
       const form = document.getElementById("preorder-form");
       const status = document.getElementById("form-status");
       const priceDisplay = document.getElementById("price-display");
+      const fullPriceDisplay = document.getElementById("full-price");
+      const depositPriceDisplay = document.getElementById("deposit-price");
+      const originalPriceDisplay = document.getElementById("original-price");
+      const counterValue = document.querySelector(".counter-value");
+      const counterTotal = document.querySelector(".counter-total");
       const currencySelect = document.getElementById("currency");
       const headerCurrencySelect = document.getElementById("header-currency");
 
@@ -184,14 +256,32 @@
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzanZhc2xhdmp4cXh6b2Vyb2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MTkxNTEsImV4cCI6MjA4OTI5NTE1MX0.a51EXgJLUDq7I0z1r8ZrX7hNeLlyesOabV4NolB1Ctg";
       const SEND_CONFIRMATION_URL = `${SUPABASE_URL}/functions/v1/send-confirmation`;
+      const PAYSTACK_PUBLIC_KEY = "pk_test_f049c52856829d132b67a1a02af013a3bbc1e052";
 
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      let supabase = null;
+      if (window.supabase && typeof window.supabase.createClient === "function") {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
 
       const priceMap = {
         USD: 25,
         GBP: 19.99,
-        EUR: 254.99,
+        EUR: 24.99,
         ZAR: 399.99,
+      };
+
+      const depositMap = {
+        USD: 5,
+        GBP: 5,
+        EUR: 8,
+        ZAR: 99.99,
+      };
+
+      const originalMap = {
+        USD: 30,
+        GBP: 24.99,
+        EUR: 29.99,
+        ZAR: 499.99,
       };
 
       const currencyByRegion = {
@@ -223,29 +313,90 @@
         }).format(amount);
       };
 
+      const formatDeposit = (currency) => {
+        const amount = depositMap[currency] ?? depositMap.USD;
+        return new Intl.NumberFormat(navigator.language || "en-US", {
+          style: "currency",
+          currency,
+        }).format(amount);
+      };
+
       const updatePrice = () => {
         const currency = headerCurrencySelect.value;
-        priceDisplay.textContent = formatPrice(currency);
+        priceDisplay.textContent = formatDeposit(currency);
+        if (fullPriceDisplay) {
+          fullPriceDisplay.textContent = formatPrice(currency);
+        }
+        if (depositPriceDisplay) {
+          depositPriceDisplay.textContent = formatDeposit(currency);
+        }
+        if (originalPriceDisplay) {
+          const original = originalMap[currency] ?? originalMap.USD;
+          originalPriceDisplay.textContent = new Intl.NumberFormat(navigator.language || "en-US", {
+            style: "currency",
+            currency,
+          }).format(original);
+        }
         currencySelect.value = currency;
       };
 
-      headerCurrencySelect.value = getRegionCurrency();
-      currencySelect.value = headerCurrencySelect.value;
-      updatePrice();
+      const getMaxUnits = () => {
+        if (!counterTotal) return 50;
+        const maxMatch = counterTotal.textContent.match(/\/\s*(\d+)/);
+        return maxMatch ? Number.parseInt(maxMatch[1], 10) : 50;
+      };
 
-      headerCurrencySelect.addEventListener("change", updatePrice);
-      currencySelect.addEventListener("change", () => {
-        headerCurrencySelect.value = currencySelect.value;
+      const refreshCounter = async () => {
+        if (!supabase || !counterValue) return;
+        try {
+          const response = await supabase
+            .from("preorders")
+            .select("*", { count: "exact", head: true });
+          if (response.error) {
+            throw response.error;
+          }
+          const max = getMaxUnits();
+          const count = Math.min(response.count ?? 0, max);
+          counterValue.textContent = String(count);
+        } catch (error) {
+          // Keep existing value if count fetch fails.
+        }
+      };
+
+      const initPricing = () => {
+        if (!priceDisplay || !headerCurrencySelect || !currencySelect) return;
+        headerCurrencySelect.value = getRegionCurrency();
+        currencySelect.value = headerCurrencySelect.value;
         updatePrice();
-      });
+        refreshCounter();
+      };
+
+      try {
+        initPricing();
+      } catch (error) {
+        // Leave placeholders if something unexpected happens.
+      }
+
+      if (headerCurrencySelect && currencySelect) {
+        headerCurrencySelect.addEventListener("change", updatePrice);
+        currencySelect.addEventListener("change", () => {
+          headerCurrencySelect.value = currencySelect.value;
+          updatePrice();
+        });
+      }
 
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
+        const currency = currencySelect.value;
         const data = {
           name: form.name.value.trim(),
           email: form.email.value.trim(),
-          currency: currencySelect.value,
+          currency,
           quantity: form.quantity.value,
+          full_price: priceMap[currency] ?? priceMap.USD,
+          deposit_amount: depositMap[currency] ?? depositMap.USD,
+          paid: false,
+          payment_reference: null,
           locale: navigator.language || "en-US",
           region: (navigator.language || "en-US").split("-")[1] || "US",
         };
@@ -258,25 +409,55 @@
         status.textContent = "Submitting your pre-order...";
 
         try {
-          const insertResponse = await supabase.from("preorders").insert([data]);
+          if (!supabase) {
+            throw new Error("Supabase client not available.");
+          }
+          if (!window.PaystackPop) {
+            throw new Error("Paystack not available.");
+          }
 
+          const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+          data.payment_reference = reference;
+
+          const insertResponse = await supabase.from("preorders").insert([data]);
           if (insertResponse.error) {
             throw new Error(insertResponse.error.message);
           }
 
-          await fetch(SEND_CONFIRMATION_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          const amount = Math.round((depositMap[currency] ?? depositMap.USD) * 100);
+          const handler = PaystackPop.setup({
+            key: PAYSTACK_PUBLIC_KEY,
+            email: data.email,
+            amount,
+            currency,
+            ref: reference,
+            callback: async (response) => {
+              await supabase
+                .from("preorders")
+                .update({ paid: true, payment_reference: response.reference })
+                .eq("payment_reference", reference);
+
+              await fetch(SEND_CONFIRMATION_URL, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+                },
+                body: JSON.stringify({ name: data.name, email: data.email }),
+              });
+
+              status.textContent = "Payment received. Your founders spot is confirmed.";
+              await refreshCounter();
+              form.reset();
+              currencySelect.value = getRegionCurrency();
+              updatePrice();
             },
-            body: JSON.stringify({ name: data.name, email: data.email }),
+            onClose: () => {
+              status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
+            },
           });
 
-          status.textContent = "Thanks for reserving. We will reach out within 24 hours.";
-          form.reset();
-          currencySelect.value = getRegionCurrency();
-          updatePrice();
+          handler.openIframe();
         } catch (error) {
           status.textContent = "Something went wrong. Please try again.";
         }
