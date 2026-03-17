@@ -7,9 +7,26 @@ const originalPriceDisplay = document.getElementById("original-price");
 const counterValue = document.querySelector(".counter-value");
 const counterTotal = document.querySelector(".counter-total");
 const CURRENCY = "ZAR";
-const FULL_PRICE = 399.99;
-const ORIGINAL_PRICE = 499.99;
-const DEPOSIT = 99.99;
+const FULL_PRICE = 349.99;
+const ORIGINAL_PRICE = 599.99;
+const DEPOSIT = 149.99;
+const LAUNCH_TARGET = new Date("2026-04-30T23:59:00+02:00");
+
+const countdownEl = document.getElementById("launch-countdown");
+const updateCountdown = () => {
+  if (!countdownEl || Number.isNaN(LAUNCH_TARGET.getTime())) return;
+  const diff = LAUNCH_TARGET.getTime() - Date.now();
+  if (diff <= 0) {
+    countdownEl.textContent = "now";
+    return;
+  }
+  const totalSeconds = Math.floor(diff / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+};
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBjVRr7gc8YYTmWrlL3qngWayXjMYdI2to",
@@ -70,6 +87,7 @@ const initPricing = () => {
   if (!priceDisplay) return;
   updatePrice();
   refreshCounter();
+  updateCountdown();
 };
 
 try {
@@ -80,6 +98,7 @@ try {
     initPricing();
   }
   window.addEventListener("load", initPricing);
+  setInterval(updateCountdown, 1000);
 } catch (error) {
   // Leave placeholders if something unexpected happens.
 }
@@ -94,9 +113,10 @@ if (form) {
   }
   const data = {
     name: form.name.value.trim(),
+    surname: form.surname.value.trim(),
     email: form.email.value.trim(),
+    number: form.number.value.trim(),
     currency: CURRENCY,
-    quantity: form.quantity.value,
     full_price: FULL_PRICE,
     deposit_amount: DEPOSIT,
     paid: false,
@@ -105,8 +125,12 @@ if (form) {
     region: (navigator.language || "en-US").split("-")[1] || "US",
   };
 
-  if (!data.name || !data.email) {
-    status.textContent = "Please provide your name and email.";
+  if (!data.email && !data.number) {
+    status.textContent = "Please provide an email or number.";
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = "Pre-order now";
+    }
     return;
   }
 
@@ -120,8 +144,10 @@ if (form) {
       throw new Error("Paystack not available.");
       }
 
-      const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-      data.payment_reference = reference;
+    const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    data.payment_reference = reference;
+    const digits = data.number.replace(/\D/g, "");
+    const paystackEmail = data.email || `noreply.rigg+${digits || "contact"}@gmail.com`;
 
     const docRef = await db.collection("preorders").add({
       ...data,
@@ -131,10 +157,10 @@ if (form) {
     const amount = Math.round(DEPOSIT * 100);
     const handler = PaystackPop.setup({
       key: PAYSTACK_PUBLIC_KEY,
-      email: data.email,
+      email: paystackEmail,
       amount,
       currency: CURRENCY,
-        ref: reference,
+      ref: reference,
       callback: async (response) => {
         const verifyResponse = await fetch(VERIFY_PAYSTACK_URL, {
           method: "POST",
@@ -179,5 +205,71 @@ if (form) {
         submitButton.textContent = "Pre-order now";
       }
     }
+  });
+}
+
+const navLinks = Array.from(document.querySelectorAll(".nav-link"));
+const sectionMap = navLinks
+  .map((link) => {
+    const id = link.getAttribute("href")?.replace("#", "");
+    const section = id ? document.getElementById(id) : null;
+    return section ? { link, section } : null;
+  })
+  .filter(Boolean);
+
+if (sectionMap.length) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const match = sectionMap.find((item) => item.section === entry.target);
+        if (!match) return;
+        if (entry.isIntersecting) {
+          navLinks.forEach((link) => link.classList.remove("active"));
+          match.link.classList.add("active");
+        }
+      });
+    },
+    { rootMargin: "-40% 0px -50% 0px", threshold: 0.1 },
+  );
+
+  sectionMap.forEach((item) => observer.observe(item.section));
+}
+
+const addonsToggle = document.querySelector(".addons-toggle");
+const addonsPanel = document.getElementById("ecosystem-panel");
+if (addonsToggle && addonsPanel) {
+  addonsToggle.addEventListener("click", () => {
+    const isOpen = addonsToggle.getAttribute("aria-expanded") === "true";
+    addonsToggle.setAttribute("aria-expanded", String(!isOpen));
+    if (isOpen) {
+      addonsPanel.hidden = true;
+    } else {
+      addonsPanel.hidden = false;
+    }
+  });
+}
+
+const ecosystemCards = Array.from(document.querySelectorAll(".ecosystem-card"));
+if (ecosystemCards.length) {
+  const toggleCard = (card) => {
+    const isExpanded = card.classList.contains("expanded");
+    ecosystemCards.forEach((item) => {
+      item.classList.remove("expanded");
+      item.setAttribute("aria-expanded", "false");
+    });
+    if (!isExpanded) {
+      card.classList.add("expanded");
+      card.setAttribute("aria-expanded", "true");
+    }
+  };
+
+  ecosystemCards.forEach((card) => {
+    card.addEventListener("click", () => toggleCard(card));
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        toggleCard(card);
+      }
+    });
   });
 }
