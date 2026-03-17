@@ -122,14 +122,6 @@ header {
   gap: 14px;
 }
 
-.nav-actions select {
-  padding: 6px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: #0f141b;
-  color: var(--text);
-  font-size: 0.82rem;
-}
 
 .nav-cta {
   padding: 9px 16px;

@@ -27,12 +27,6 @@
           <a class="nav-link" href="#preorder">Pre-Order</a>
         </nav>
         <div class="nav-actions">
-          <select id="header-currency" aria-label="Currency">
-            <option value="USD">USD</option>
-            <option value="GBP">GBP</option>
-            <option value="EUR">EUR</option>
-            <option value="ZAR">ZAR</option>
-          </select>
           <a class="button nav-cta" href="#preorder">Pre-Order</a>
         </div>
       </div>
@@ -49,8 +43,8 @@
             clean flow, and no clutter between sets.
           </p>
           <div class="price">
-            <span id="price-display">—</span>
-            <small>Refundable pre-order deposit</small>
+            <span id="price-display">R99.99</span>
+            <small>Refundable pre-order deposit · ZAR only</small>
           </div>
           <div class="hero-actions">
             <a class="button primary" href="#preorder">Reserve yours</a>
@@ -151,15 +145,15 @@
           <div class="founder-pricing">
             <div>
               <span class="label">Founder Price</span>
-              <span id="full-price">—</span>
+              <span id="full-price">R399.99</span>
             </div>
             <div>
               <span class="label">Original Price</span>
-              <span id="original-price" class="strikethrough">—</span>
+              <span id="original-price" class="strikethrough">R499.99</span>
             </div>
             <div>
               <span class="label">Deposit (Pre-Order)</span>
-              <span id="deposit-price">—</span>
+              <span id="deposit-price">R99.99</span>
             </div>
           </div>
         </div>
@@ -173,17 +167,8 @@
             <input id="email" name="email" type="email" placeholder="you@example.com" required />
           </div>
           <div>
-            <label for="currency">Currency</label>
-            <select id="currency" name="currency">
-              <option value="USD">USD (US Dollar)</option>
-              <option value="GBP">GBP (British Pound)</option>
-              <option value="EUR">EUR (Euro)</option>
-              <option value="ZAR">ZAR (South African Rand)</option>
-            </select>
-          </div>
-          <div>
             <label for="quantity">Quantity</label>
-            <input id="quantity" name="quantity" type="number" value="1" readonly />
+            <input id="quantity" name="quantity" type="number" value="1" min="1" max="1" inputmode="numeric" readonly />
           </div>
           <button class="button primary" type="submit">Pre-order now</button>
           <p class="notice" id="form-status" aria-live="polite"></p>
@@ -239,229 +224,8 @@
     </footer>
 
     <script src="https://js.paystack.co/v1/inline.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-      const form = document.getElementById("preorder-form");
-      const status = document.getElementById("form-status");
-      const priceDisplay = document.getElementById("price-display");
-      const fullPriceDisplay = document.getElementById("full-price");
-      const depositPriceDisplay = document.getElementById("deposit-price");
-      const originalPriceDisplay = document.getElementById("original-price");
-      const counterValue = document.querySelector(".counter-value");
-      const counterTotal = document.querySelector(".counter-total");
-      const currencySelect = document.getElementById("currency");
-      const headerCurrencySelect = document.getElementById("header-currency");
-
-      const SUPABASE_URL = "https://asjvaslavjxqxzoeroat.supabase.co";
-      const SUPABASE_ANON_KEY =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzanZhc2xhdmp4cXh6b2Vyb2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MTkxNTEsImV4cCI6MjA4OTI5NTE1MX0.a51EXgJLUDq7I0z1r8ZrX7hNeLlyesOabV4NolB1Ctg";
-      const SEND_CONFIRMATION_URL = `${SUPABASE_URL}/functions/v1/send-confirmation`;
-      const PAYSTACK_PUBLIC_KEY = "pk_test_f049c52856829d132b67a1a02af013a3bbc1e052";
-
-      let supabase = null;
-      if (window.supabase && typeof window.supabase.createClient === "function") {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-
-      const priceMap = {
-        USD: 25,
-        GBP: 19.99,
-        EUR: 24.99,
-        ZAR: 399.99,
-      };
-
-      const depositMap = {
-        USD: 5,
-        GBP: 5,
-        EUR: 8,
-        ZAR: 99.99,
-      };
-
-      const originalMap = {
-        USD: 30,
-        GBP: 24.99,
-        EUR: 29.99,
-        ZAR: 499.99,
-      };
-
-      const currencyByRegion = {
-        US: "USD",
-        GB: "GBP",
-        IE: "EUR",
-        DE: "EUR",
-        FR: "EUR",
-        ES: "EUR",
-        IT: "EUR",
-        NL: "EUR",
-        ZA: "ZAR",
-      };
-
-      const getRegionCurrency = () => {
-        const locale = navigator.language || "en-US";
-        const parts = locale.split("-");
-        if (parts.length > 1 && currencyByRegion[parts[1].toUpperCase()]) {
-          return currencyByRegion[parts[1].toUpperCase()];
-        }
-        return "USD";
-      };
-
-      const formatPrice = (currency) => {
-        const amount = priceMap[currency] ?? priceMap.USD;
-        return new Intl.NumberFormat(navigator.language || "en-US", {
-          style: "currency",
-          currency,
-        }).format(amount);
-      };
-
-      const formatDeposit = (currency) => {
-        const amount = depositMap[currency] ?? depositMap.USD;
-        return new Intl.NumberFormat(navigator.language || "en-US", {
-          style: "currency",
-          currency,
-        }).format(amount);
-      };
-
-      const updatePrice = () => {
-        const currency = headerCurrencySelect.value;
-        priceDisplay.textContent = formatDeposit(currency);
-        if (fullPriceDisplay) {
-          fullPriceDisplay.textContent = formatPrice(currency);
-        }
-        if (depositPriceDisplay) {
-          depositPriceDisplay.textContent = formatDeposit(currency);
-        }
-        if (originalPriceDisplay) {
-          const original = originalMap[currency] ?? originalMap.USD;
-          originalPriceDisplay.textContent = new Intl.NumberFormat(navigator.language || "en-US", {
-            style: "currency",
-            currency,
-          }).format(original);
-        }
-        currencySelect.value = currency;
-      };
-
-      const getMaxUnits = () => {
-        if (!counterTotal) return 50;
-        const maxMatch = counterTotal.textContent.match(/\/\s*(\d+)/);
-        return maxMatch ? Number.parseInt(maxMatch[1], 10) : 50;
-      };
-
-      const refreshCounter = async () => {
-        if (!supabase || !counterValue) return;
-        try {
-          const response = await supabase
-            .from("preorders")
-            .select("*", { count: "exact", head: true });
-          if (response.error) {
-            throw response.error;
-          }
-          const max = getMaxUnits();
-          const count = Math.min(response.count ?? 0, max);
-          counterValue.textContent = String(count);
-        } catch (error) {
-          // Keep existing value if count fetch fails.
-        }
-      };
-
-      const initPricing = () => {
-        if (!priceDisplay || !headerCurrencySelect || !currencySelect) return;
-        headerCurrencySelect.value = getRegionCurrency();
-        currencySelect.value = headerCurrencySelect.value;
-        updatePrice();
-        refreshCounter();
-      };
-
-      try {
-        initPricing();
-      } catch (error) {
-        // Leave placeholders if something unexpected happens.
-      }
-
-      if (headerCurrencySelect && currencySelect) {
-        headerCurrencySelect.addEventListener("change", updatePrice);
-        currencySelect.addEventListener("change", () => {
-          headerCurrencySelect.value = currencySelect.value;
-          updatePrice();
-        });
-      }
-
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const currency = currencySelect.value;
-        const data = {
-          name: form.name.value.trim(),
-          email: form.email.value.trim(),
-          currency,
-          quantity: form.quantity.value,
-          full_price: priceMap[currency] ?? priceMap.USD,
-          deposit_amount: depositMap[currency] ?? depositMap.USD,
-          paid: false,
-          payment_reference: null,
-          locale: navigator.language || "en-US",
-          region: (navigator.language || "en-US").split("-")[1] || "US",
-        };
-
-        if (!data.name || !data.email) {
-          status.textContent = "Please provide your name and email.";
-          return;
-        }
-
-        status.textContent = "Submitting your pre-order...";
-
-        try {
-          if (!supabase) {
-            throw new Error("Supabase client not available.");
-          }
-          if (!window.PaystackPop) {
-            throw new Error("Paystack not available.");
-          }
-
-          const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-          data.payment_reference = reference;
-
-          const insertResponse = await supabase.from("preorders").insert([data]);
-          if (insertResponse.error) {
-            throw new Error(insertResponse.error.message);
-          }
-
-          const amount = Math.round((depositMap[currency] ?? depositMap.USD) * 100);
-          const handler = PaystackPop.setup({
-            key: PAYSTACK_PUBLIC_KEY,
-            email: data.email,
-            amount,
-            currency,
-            ref: reference,
-            callback: async (response) => {
-              await supabase
-                .from("preorders")
-                .update({ paid: true, payment_reference: response.reference })
-                .eq("payment_reference", reference);
-
-              await fetch(SEND_CONFIRMATION_URL, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-                },
-                body: JSON.stringify({ name: data.name, email: data.email }),
-              });
-
-              status.textContent = "Payment received. Your founders spot is confirmed.";
-              await refreshCounter();
-              form.reset();
-              currencySelect.value = getRegionCurrency();
-              updatePrice();
-            },
-            onClose: () => {
-              status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
-            },
-          });
-
-          handler.openIframe();
-        } catch (error) {
-          status.textContent = "Something went wrong. Please try again.";
-        }
-      });
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+    <script src="app.js" defer></script>
   </body>
 </html>
