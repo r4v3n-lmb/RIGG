@@ -19,20 +19,22 @@
       <div class="container nav">
         <div class="logo">
           <img class="logo-icon" src="assets/rigg-logo.png" alt="RIGG icon" />
-          RIGG
         </div>
-        <nav class="nav-links">
-          <a href="#features">Features</a>
-          <a href="#video">Video</a>
-          <a href="#gallery">Gallery</a>
-          <a href="#preorder">Pre-Order</a>
+        <nav class="nav-links" aria-label="Primary">
+          <a class="nav-link" href="#features">Features</a>
+          <a class="nav-link" href="#video">Video</a>
+          <a class="nav-link" href="#gallery">Gallery</a>
+          <a class="nav-link" href="#preorder">Pre-Order</a>
+        </nav>
+        <div class="nav-actions">
           <select id="header-currency" aria-label="Currency">
             <option value="USD">USD</option>
             <option value="GBP">GBP</option>
             <option value="EUR">EUR</option>
             <option value="ZAR">ZAR</option>
           </select>
-        </nav>
+          <a class="button nav-cta" href="#preorder">Pre-Order</a>
+        </div>
       </div>
     </header>
 
@@ -253,8 +255,9 @@
       const currencySelect = document.getElementById("currency");
       const headerCurrencySelect = document.getElementById("header-currency");
 
-      const SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co";
-      const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+      const SUPABASE_URL = "https://asjvaslavjxqxzoeroat.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzanZhc2xhdmp4cXh6b2Vyb2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MTkxNTEsImV4cCI6MjA4OTI5NTE1MX0.a51EXgJLUDq7I0z1r8ZrX7hNeLlyesOabV4NolB1Ctg";
       const SEND_CONFIRMATION_URL = `${SUPABASE_URL}/functions/v1/send-confirmation`;
 
       const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

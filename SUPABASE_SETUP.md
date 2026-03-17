@@ -22,8 +22,8 @@ $env:SITE_URL="https://your-github-pages-site"
 
 ## 4. Update the frontend config
 Update these values in `index.html`:
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
+- `SUPABASE_URL`: `https://asjvaslavjxqxzoeroat.supabase.co`
+- `SUPABASE_ANON_KEY`: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFzanZhc2xhdmp4cXh6b2Vyb2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MTkxNTEsImV4cCI6MjA4OTI5NTE1MX0.a51EXgJLUDq7I0z1r8ZrX7hNeLlyesOabV4NolB1Ctg`
 
 ## 5. Resend domain setup
 Verify your sending domain in Resend so the emails deliver correctly.
