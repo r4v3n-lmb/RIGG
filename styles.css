@@ -288,6 +288,12 @@ header {
   font-size: 1rem;
 }
 
+.hero-proof {
+  margin-top: 12px;
+  font-weight: 600;
+  color: rgba(197, 164, 255, 0.9);
+}
+
 .hero-actions {
   margin-top: 22px;
   display: flex;
@@ -1002,6 +1008,41 @@ header {
 .form-helper {
   font-size: 0.8rem;
   color: rgba(232, 241, 255, 0.55);
+}
+
+.trust-lines {
+  margin-top: 10px;
+  display: grid;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: rgba(232, 241, 255, 0.7);
+}
+
+.email-fallback {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.email-fallback-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.email-fallback-input input {
+  flex: 1 1 200px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(36, 48, 66, 0.8);
+  background: rgba(8, 10, 14, 0.9);
+  color: var(--text);
+}
+
+.email-fallback-input .button {
+  padding: 10px 16px;
 }
 
 footer {
