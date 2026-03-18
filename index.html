@@ -18,58 +18,79 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    <header>
+    <div class="announcement" role="status">
+      <span class="announcement-tag">Founder Drop</span>
+      <span class="announcement-copy">
+        Only <span class="counter-value">23</span><span class="counter-total">/50 Units</span> · Launch in
+        <span id="launch-countdown" class="announcement-countdown" aria-live="polite">April 30</span>
+      </span>
+      <span class="counter-live">Live count · Updated today</span>
+      <a class="announcement-link" href="#preorder">Reserve now</a>
+    </div>
+
+    <header class="site-header">
       <div class="container nav full-width">
         <div class="logo">
           <img class="logo-icon" src="assets/rigg-logo.png" alt="RIGG icon" />
         </div>
         <nav class="nav-links" aria-label="Primary">
           <a class="nav-link" href="#features">Features</a>
+          <a class="nav-link" href="#specs">Specs</a>
           <a class="nav-link" href="#video">Video</a>
           <a class="nav-link" href="#gallery">Gallery</a>
-          <a class="nav-link" href="#preorder">RESERVE NOW</a>
+          <a class="nav-link" href="#pricing">Pricing</a>
+          <a class="nav-link nav-link-cta" href="#preorder">Reserve now</a>
         </nav>
-        <div class="nav-actions">
-          <a class="button secondary nav-cta" href="#preorder">RESERVE NOW</a>
-        </div>
       </div>
     </header>
 
     <main>
-      <section class="container hero">
-        <div class="counter-banner">
-          <div class="counter-block">
-            <span class="counter-label">Founders reserved</span>
-            <span class="counter-value">23</span>
-            <span class="counter-total">/50 Units</span>
-            <span class="counter-live">Live count · Updated today</span>
-          </div>
-          <div class="counter-divider" aria-hidden="true"></div>
-          <div class="countdown-block">
-            <span class="countdown-label">Launch in</span>
-            <span id="launch-countdown" class="countdown-value" aria-live="polite">April 30</span>
-          </div>
+      <section class="hero" id="top">
+        <div class="hero-media">
+          <div class="hero-glow" aria-hidden="true"></div>
+          <img src="assets/hero.svg" alt="RIGG Core V1 product hero" />
         </div>
-        <div>
+        <div class="hero-content">
           <p class="descriptor">Modular gym carry</p>
           <h1>CORE V1 - Founders Edition</h1>
-          <p class="slogan" hidden>Everything You Need. Nothing You Don't.</p>
-          <p>
+          <p class="hero-sub">
             Your gear ends up on the floor. RIGG keeps essentials locked in place for clean,
             focused sets.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#preorder">RESERVE NOW</a>
+            <a class="button primary" href="#preorder">Reserve now</a>
             <a class="button secondary" href="#features">Learn more</a>
           </div>
         </div>
-        <div class="hero-card">
-          <img src="assets/hero.svg" alt="RIGG product hero" />
+      </section>
+
+      <section id="specs" class="section specs">
+        <div class="container">
+          <h2>Engineered specs.</h2>
+          <p class="lead">Every detail tuned for strength, speed, and clean sessions.</p>
+          <div class="spec-grid">
+            <div class="spec-card">
+              <span class="spec-label">Weight</span>
+              <span class="spec-value">TBD</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-label">Dimensions</span>
+              <span class="spec-value">TBD</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-label">Materials</span>
+              <span class="spec-value">Scratch-proof shell, water-resistant</span>
+            </div>
+            <div class="spec-card">
+              <span class="spec-label">Founder Price</span>
+              <span class="spec-value">R399.99</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -115,29 +136,47 @@
       </section>
 
 
-      <section id="video" class="section">
+      <section id="video" class="section media-section">
         <div class="container">
           <h2>Product in motion.</h2>
-          <div class="video-wrap">
-            <video controls poster="assets/teaser-poster.svg">
-              <source src="assets/teaser.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
+        </div>
+        <div class="media-full">
+          <video autoplay muted loop playsinline poster="assets/teaser-poster.svg">
+            <source src="assets/teaser.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
       </section>
 
-      <section id="gallery" class="section">
+      <section id="gallery" class="section gallery-section">
         <div class="container">
           <h2>Gallery</h2>
           <p class="lead">Close-ups and system details.</p>
-          <div class="gallery">
-            <img src="assets/gallery-1.svg" alt="RIGG detail view" />
-            <img src="assets/gallery-2.svg" alt="RIGG signal UI" />
-            <img src="assets/gallery-3.svg" alt="RIGG component view" />
-            <img src="assets/gallery-1.svg" alt="RIGG magnetic dock" />
-            <img src="assets/gallery-2.svg" alt="RIGG storage layout" />
-            <img src="assets/gallery-3.svg" alt="RIGG carry profile" />
+        </div>
+        <div class="gallery-track" aria-label="RIGG Core V1 gallery">
+          <img src="assets/gallery-1.svg" alt="RIGG detail view" />
+          <img src="assets/gallery-2.svg" alt="RIGG signal UI" />
+          <img src="assets/gallery-3.svg" alt="RIGG component view" />
+          <img src="assets/gallery-1.svg" alt="RIGG magnetic dock" />
+          <img src="assets/gallery-2.svg" alt="RIGG storage layout" />
+          <img src="assets/gallery-3.svg" alt="RIGG carry profile" />
+        </div>
+      </section>
+
+      <section id="pricing" class="section pricing">
+        <div class="container">
+          <h2>Founder pricing.</h2>
+          <p class="lead">Secure your place in the first 50 units.</p>
+          <div class="pricing-card">
+            <div>
+              <p class="pricing-tier">CORE V1 - Founders Edition</p>
+              <p class="pricing-price">
+                <span data-price="full">R399.99</span>
+                <span data-price="original" class="strikethrough">R599.99</span>
+              </p>
+              <p class="pricing-note">Pay R150 now, R250 at launch.</p>
+            </div>
+            <a class="button primary" href="#preorder">Reserve now</a>
           </div>
         </div>
       </section>

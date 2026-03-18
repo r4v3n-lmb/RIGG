@@ -4,6 +4,8 @@ const priceDisplay = document.getElementById("price-display");
 const fullPriceDisplay = document.getElementById("full-price");
 const depositPriceDisplay = document.getElementById("deposit-price");
 const originalPriceDisplay = document.getElementById("original-price");
+const fullPriceHighlights = document.querySelectorAll('[data-price="full"]');
+const originalPriceHighlights = document.querySelectorAll('[data-price="original"]');
 const counterValue = document.querySelector(".counter-value");
 const counterTotal = document.querySelector(".counter-total");
 const CURRENCY = "ZAR";
@@ -64,6 +66,12 @@ const updatePrice = () => {
   if (originalPriceDisplay) {
     originalPriceDisplay.textContent = formatZar(ORIGINAL_PRICE);
   }
+  fullPriceHighlights.forEach((el) => {
+    el.textContent = formatZar(FULL_PRICE);
+  });
+  originalPriceHighlights.forEach((el) => {
+    el.textContent = formatZar(ORIGINAL_PRICE);
+  });
 };
 
 const getMaxUnits = () => {
@@ -98,16 +106,16 @@ const initPricing = () => {
 const setupScrollReveals = () => {
   const groups = [
     {
-      selector: ".card, .gallery img, .ecosystem-card, .step",
+      selector: ".card, .gallery-track img, .ecosystem-card, .spec-card",
       reveal: "up",
     },
     {
       selector:
-        ".section h2, .section p.lead, .hero h1, .hero p, .price, .founder-meta, .founder-pricing",
+        ".section h2, .section p.lead, .hero h1, .hero p, .pricing-card, .founder-meta, .founder-pricing",
       reveal: "left",
     },
     {
-      selector: ".hero-card, .video-wrap, .addons-panel, .counter-banner",
+      selector: ".hero-media, .media-full, .addons-panel, .form",
       reveal: "block",
     },
   ];
@@ -306,6 +314,25 @@ if (sectionMap.length) {
 
   sectionMap.forEach((item) => observer.observe(item.section));
 }
+
+const siteHeader = document.querySelector(".site-header");
+const announcementBar = document.querySelector(".announcement");
+const updateHeaderState = () => {
+  if (!siteHeader) return;
+  siteHeader.classList.toggle("is-scrolled", window.scrollY > 10);
+};
+const updateAnnouncementHeight = () => {
+  if (!announcementBar) return;
+  document.documentElement.style.setProperty(
+    "--announce-height",
+    `${announcementBar.offsetHeight}px`,
+  );
+};
+updateAnnouncementHeight();
+updateHeaderState();
+window.addEventListener("scroll", updateHeaderState, { passive: true });
+window.addEventListener("resize", updateAnnouncementHeight);
+window.addEventListener("load", updateAnnouncementHeight);
 
 const addonsToggle = document.querySelector(".addons-toggle");
 const addonsPanel = document.getElementById("ecosystem-panel");
