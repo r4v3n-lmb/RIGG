@@ -1140,7 +1140,7 @@ footer {
     color: rgba(232, 241, 255, 0.35);
   }
 
-  .roadmap-row .ecosystem-card:last-child::after {
+  .roadmap-row.bottom .ecosystem-card:last-child::after {
     content: none;
   }
 
