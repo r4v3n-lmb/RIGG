@@ -6,13 +6,15 @@ const depositPriceDisplay = document.getElementById("deposit-price");
 const originalPriceDisplay = document.getElementById("original-price");
 const fullPriceHighlights = document.querySelectorAll('[data-price="full"]');
 const originalPriceHighlights = document.querySelectorAll('[data-price="original"]');
-const counterValue = document.querySelector(".counter-value");
-const counterTotal = document.querySelector(".counter-total");
+const depositPriceHighlights = document.querySelectorAll('[data-price="deposit"]');
+const counterValues = Array.from(document.querySelectorAll(".counter-value"));
+const counterTotals = Array.from(document.querySelectorAll(".counter-total"));
 const CURRENCY = "ZAR";
 const FULL_PRICE = 399.99;
 const ORIGINAL_PRICE = 599.99;
 const DEPOSIT = 150.0;
-const LAUNCH_TARGET = new Date("2026-04-30T23:59:00+02:00");
+const launchDateAttr = document.body?.dataset?.launch;
+const LAUNCH_TARGET = new Date(launchDateAttr || "2026-04-30T23:59:00+02:00");
 let revealsInitialized = false;
 
 const countdownEl = document.getElementById("launch-countdown");
@@ -72,21 +74,27 @@ const updatePrice = () => {
   originalPriceHighlights.forEach((el) => {
     el.textContent = formatZar(ORIGINAL_PRICE);
   });
+  depositPriceHighlights.forEach((el) => {
+    el.textContent = formatZar(DEPOSIT);
+  });
 };
 
 const getMaxUnits = () => {
-  if (!counterTotal) return 50;
-  const maxMatch = counterTotal.textContent.match(/\/\s*(\d+)/);
+  const totalEl = counterTotals[0];
+  if (!totalEl) return 50;
+  const maxMatch = totalEl.textContent.match(/\/\s*(\d+)/);
   return maxMatch ? Number.parseInt(maxMatch[1], 10) : 50;
 };
 
 const refreshCounter = async () => {
-  if (!db || !counterValue) return;
+  if (!db || !counterValues.length) return;
   try {
     const snapshot = await db.collection("preorders").where("paid", "==", true).get();
     const max = getMaxUnits();
     const count = Math.min(snapshot.size ?? 0, max);
-    counterValue.textContent = String(count);
+    counterValues.forEach((el) => {
+      el.textContent = String(count);
+    });
   } catch (error) {
     // Keep existing value if count fetch fails.
   }
