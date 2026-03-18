@@ -7,9 +7,9 @@ const originalPriceDisplay = document.getElementById("original-price");
 const counterValue = document.querySelector(".counter-value");
 const counterTotal = document.querySelector(".counter-total");
 const CURRENCY = "ZAR";
-const FULL_PRICE = 349.99;
+const FULL_PRICE = 399.99;
 const ORIGINAL_PRICE = 599.99;
-const DEPOSIT = 149.99;
+const DEPOSIT = 150.0;
 const LAUNCH_TARGET = new Date("2026-04-30T23:59:00+02:00");
 let revealsInitialized = false;
 
