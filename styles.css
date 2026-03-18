@@ -170,10 +170,22 @@ header {
   box-shadow: 0 10px 26px rgba(165, 107, 255, 0.35);
 }
 
+.nav-cta.secondary {
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+  border-color: rgba(197, 164, 255, 0.35);
+}
+
 .nav-cta:hover {
   transform: translateY(-2px);
   border-color: rgba(197, 164, 255, 0.85);
   background: linear-gradient(135deg, rgba(214, 186, 255, 1), rgba(165, 107, 255, 0.98));
+}
+
+.nav-cta.secondary:hover {
+  background: rgba(18, 22, 29, 0.5);
+  border-color: rgba(197, 164, 255, 0.65);
 }
 
 .hero {
@@ -228,6 +240,20 @@ header {
   color: var(--muted);
 }
 
+.counter-live {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 241, 255, 0.45);
+}
+
+.counter-update {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 241, 255, 0.35);
+}
+
 .counter-block,
 .countdown-block {
   display: flex;
@@ -251,6 +277,13 @@ header {
   margin-top: 12px;
 }
 
+.descriptor {
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(232, 241, 255, 0.6);
+  margin-top: 6px;
+}
 .hero p {
   color: var(--muted);
   margin-top: 16px;
@@ -347,6 +380,23 @@ header {
   min-height: 150px;
   transition: transform 0.25s var(--ease-out), border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
   animation: none;
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(197, 164, 255, 0.4);
+  color: rgba(197, 164, 255, 0.9);
+  margin-bottom: 12px;
+  background: rgba(18, 22, 29, 0.6);
+}
+
+.feature-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .card h3 {
@@ -503,6 +553,34 @@ header {
   padding: 16px;
   display: grid;
   gap: 6px;
+}
+
+.savings {
+  margin-top: 12px;
+  font-weight: 600;
+  color: rgba(197, 164, 255, 0.9);
+}
+
+.deposit-note {
+  margin-top: 16px;
+  color: var(--muted);
+  max-width: 520px;
+}
+
+.trust-strip {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: rgba(232, 241, 255, 0.7);
+  font-size: 0.85rem;
+}
+
+.trust-strip span {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(36, 48, 66, 0.7);
+  background: rgba(15, 20, 27, 0.6);
 }
 
 .price-inline {
@@ -776,6 +854,44 @@ header {
   border-radius: 18px;
   padding: 16px;
   background: rgba(18, 22, 29, 0.6);
+}
+
+.newsletter-card {
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(36, 48, 66, 0.7);
+  background: rgba(12, 16, 22, 0.65);
+  display: grid;
+  gap: 10px;
+}
+
+.newsletter-card h3 {
+  font-size: 1.1rem;
+}
+
+.newsletter-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.newsletter-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.newsletter-input input {
+  flex: 1 1 200px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(36, 48, 66, 0.8);
+  background: rgba(8, 10, 14, 0.9);
+  color: var(--text);
+}
+
+.newsletter-input .button {
+  padding: 10px 16px;
 }
 
 .ecosystem-flow {

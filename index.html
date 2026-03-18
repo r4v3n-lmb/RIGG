@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0e1116" />
     <meta name="description" content="RIGG Core V1 pre-order page" />
+    <meta property="og:title" content="RIGG Core V1 | Pre-Order" />
+    <meta
+      property="og:description"
+      content="Reserve your RIGG Core V1 founders edition. Limited to the first 50 orders."
+    />
+    <meta property="og:image" content="assets/hero.svg" />
+    <meta property="og:type" content="website" />
     <title>RIGG Core V1 | Pre-Order</title>
+    <link rel="icon" href="assets/rigg-logo.png" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -27,7 +35,7 @@
           <a class="nav-link" href="#preorder">Pre-Order</a>
         </nav>
         <div class="nav-actions">
-          <a class="button nav-cta" href="#preorder">Reserve Now</a>
+          <a class="button secondary nav-cta" href="#preorder">Reserve Now</a>
         </div>
       </div>
     </header>
@@ -39,6 +47,8 @@
             <span class="counter-label">Founders reserved</span>
             <span class="counter-value">23</span>
             <span class="counter-total">/50 Units</span>
+            <span class="counter-live">Live count</span>
+            <span class="counter-update">Updated today</span>
           </div>
           <div class="counter-divider" aria-hidden="true"></div>
           <div class="countdown-block">
@@ -48,6 +58,7 @@
         </div>
         <div>
           <p class="kicker">Limited launch batch · Founder Drop</p>
+          <p class="descriptor">The modular gym carry system</p>
           <h1>CORE V1 - Founders Edition</h1>
           <p class="slogan" hidden>Everything You Need. Nothing You Don't.</p>
           <p>
@@ -71,14 +82,34 @@
           <p class="lead">Three moves. Zero clutter. Built for fast transitions.</p>
           <div class="grid">
             <div class="card">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M7 4v7a5 5 0 0 0 10 0V4" />
+                  <path d="M5 4h4" />
+                  <path d="M15 4h4" />
+                </svg>
+              </div>
               <h3>Magnetic dock</h3>
               <p>Snaps to racks and benches to keep gear off dirty surfaces.</p>
             </div>
             <div class="card">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <rect x="4" y="6" width="16" height="12" rx="2" />
+                  <path d="M8 10h8" />
+                  <path d="M8 14h5" />
+                </svg>
+              </div>
               <h3>Essential storage</h3>
               <p>Dedicated pockets for phone, keys, Lifting Grips, bottle, and towel.</p>
             </div>
             <div class="card">
+              <div class="feature-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                  <path d="M12 3l7 4v5c0 4.4-3 7.8-7 9-4-1.2-7-4.6-7-9V7l7-4z" />
+                  <path d="M9.5 12.5l2 2 3.5-3.5" />
+                </svg>
+              </div>
               <h3>Protective materials</h3>
               <p>
                 Wipe-clean, scratch-proof, water-resistant shell with an insulated bottle pouch and
@@ -122,6 +153,7 @@
           <div class="preorder-copy">
           <h2>CORE V1 - Founders Edition</h2>
           <p class="lead">CORE V1 — Founder Drop. Limited to the first 50 orders.</p>
+          <p class="savings">Save R250 vs retail when you reserve today.</p>
           <div class="founder-meta">
             <div class="founder-benefits">
               <span>Discounted price</span>
@@ -133,7 +165,7 @@
           </div>
           <div class="founder-pricing">
             <div>
-              <span class="label">Founder Price</span>
+              <span class="label">Founder Price (Full)</span>
               <span class="price-inline">
                 <span id="full-price">R349.99</span>
                 <span id="original-price" class="strikethrough">R599.99</span>
@@ -143,6 +175,15 @@
               <span class="label">Reserve Deposit</span>
               <span id="deposit-price">R149.99</span>
             </div>
+          </div>
+          <p class="deposit-note">
+            Pay R149.99 to reserve your founders edition. The remaining R200 is due at launch, and
+            you’ll receive an email confirmation after payment. Cancel anytime before launch.
+          </p>
+          <div class="trust-strip">
+            <span>Secure Paystack checkout</span>
+            <span>Email confirmation</span>
+            <span>Founder-built in SA</span>
           </div>
         </div>
         <form class="form" id="preorder-form">
@@ -217,6 +258,14 @@
                   <p>In development</p>
                   <div class="ecosystem-detail">Performance gear and layers.</div>
                 </div>
+              </div>
+            </div>
+            <div class="newsletter-card">
+              <h3>Get roadmap updates</h3>
+              <p>Join the list for launch timing, founder drops, and new module releases.</p>
+              <div class="newsletter-input">
+                <input type="email" placeholder="Email address" aria-label="Email address" />
+                <button class="button primary" type="button">Notify me</button>
               </div>
             </div>
           </div>
