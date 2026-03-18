@@ -197,12 +197,12 @@ if (form) {
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = "Pre-order now";
+      submitButton.textContent = "RESERVE NOW";
       }
       return;
     }
 
-    status.textContent = "Submitting your pre-order...";
+    status.textContent = "Submitting your reservation...";
 
     try {
       if (!db) {
@@ -247,7 +247,7 @@ if (form) {
             setSubmitError();
             if (submitButton) {
               submitButton.disabled = false;
-              submitButton.textContent = "Pre-order now";
+              submitButton.textContent = "RESERVE NOW";
             }
             return;
           }
@@ -263,7 +263,7 @@ if (form) {
           clearSubmitError();
           if (submitButton) {
             submitButton.disabled = false;
-            submitButton.textContent = "Pre-order now";
+            submitButton.textContent = "RESERVE NOW";
           }
         },
       });
@@ -274,7 +274,7 @@ if (form) {
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = "Pre-order now";
+        submitButton.textContent = "RESERVE NOW";
       }
     }
   });
