@@ -11,6 +11,7 @@ const FULL_PRICE = 349.99;
 const ORIGINAL_PRICE = 599.99;
 const DEPOSIT = 149.99;
 const LAUNCH_TARGET = new Date("2026-04-30T23:59:00+02:00");
+let revealsInitialized = false;
 
 const countdownEl = document.getElementById("launch-countdown");
 const updateCountdown = () => {
@@ -88,6 +89,57 @@ const initPricing = () => {
   updatePrice();
   refreshCounter();
   updateCountdown();
+  if (!revealsInitialized) {
+    setupScrollReveals();
+    revealsInitialized = true;
+  }
+};
+
+const setupScrollReveals = () => {
+  const groups = [
+    {
+      selector: ".card, .gallery img, .ecosystem-card, .step",
+      reveal: "up",
+    },
+    {
+      selector:
+        ".section h2, .section p.lead, .hero h1, .hero p, .price, .founder-meta, .founder-pricing",
+      reveal: "left",
+    },
+    {
+      selector: ".hero-card, .video-wrap, .addons-panel, .counter-banner",
+      reveal: "block",
+    },
+  ];
+
+  const elements = [];
+  groups.forEach(({ selector, reveal }) => {
+    document.querySelectorAll(selector).forEach((el) => {
+      if (el.classList.contains("reveal")) return;
+      el.classList.add("reveal");
+      el.dataset.reveal = reveal;
+      elements.push(el);
+    });
+  });
+
+  if (!elements.length) return;
+  if (!("IntersectionObserver" in window)) {
+    elements.forEach((el) => el.classList.add("in-view"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("in-view");
+        obs.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
+  );
+
+  elements.forEach((el) => observer.observe(el));
 };
 
 try {

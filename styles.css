@@ -346,7 +346,7 @@ header {
   padding: 20px;
   min-height: 150px;
   transition: transform 0.25s var(--ease-out), border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
-  animation: card-reveal 0.8s var(--ease-out) both;
+  animation: none;
 }
 
 .card h3 {
@@ -401,7 +401,7 @@ header {
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: transform 0.25s var(--ease-out), border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
-  animation: card-reveal 0.8s var(--ease-out) both;
+  animation: none;
 }
 
 .gallery img:hover {
@@ -925,35 +925,37 @@ footer {
   justify-self: center;
 }
 
-main > section,
-footer {
+.reveal {
   opacity: 0;
   transform: translateY(16px);
-  animation: section-reveal 0.8s var(--ease-out) forwards;
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out), clip-path 0.9s var(--ease-out);
+  will-change: opacity, transform, clip-path;
 }
 
-main > section:nth-of-type(1) {
-  animation-delay: 0.05s;
+.reveal[data-reveal="left"] {
+  transform: translateX(-18px);
+  clip-path: inset(0 100% 0 0);
 }
 
-main > section:nth-of-type(2) {
-  animation-delay: 0.12s;
+.reveal[data-reveal="up"] {
+  transform: translateY(18px);
 }
 
-main > section:nth-of-type(3) {
-  animation-delay: 0.18s;
+.reveal[data-reveal="block"] {
+  transform: translateY(12px);
 }
 
-main > section:nth-of-type(4) {
-  animation-delay: 0.24s;
+.reveal.in-view {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
 }
 
-main > section:nth-of-type(5) {
-  animation-delay: 0.3s;
-}
-
+main > section,
 footer {
-  animation-delay: 0.35s;
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 
 @keyframes section-reveal {
@@ -1005,12 +1007,12 @@ footer {
 @media (max-width: 720px) {
   .nav {
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
   }
 
   .nav .logo-icon {
-    height: 68px;
-    max-width: 150px;
+    height: 82px;
+    max-width: 180px;
   }
 
   .logo {
@@ -1021,6 +1023,7 @@ footer {
     flex-wrap: wrap;
     justify-content: center;
     flex: 0 0 auto;
+    margin-top: -4px;
   }
 
   .nav-actions {
@@ -1032,6 +1035,8 @@ footer {
   .nav-cta {
     width: 100%;
     text-align: center;
+    font-size: 0.8rem;
+    padding: 8px 14px;
   }
 
   .hero-actions {
@@ -1058,7 +1063,7 @@ footer {
 
   .form {
     justify-self: center;
-    padding-left: 28px;
+    padding-left: 40px;
     padding-right: 16px;
   }
 
@@ -1082,19 +1087,24 @@ footer {
   }
 
   .footer-socials {
-    order: 1;
+    order: 2;
     width: 100%;
     justify-content: center;
     gap: 16px;
   }
 
   .footer-line .small {
-    order: 2;
+    order: 1;
   }
 
   .footer-line .logo {
     order: 3;
     justify-self: center;
+  }
+
+  .footer-line .logo-icon {
+    height: 64px;
+    max-width: 150px;
   }
 
   .ecosystem-flow {
@@ -1161,8 +1171,8 @@ footer {
   }
 
   .nav .logo-icon {
-    height: 62px;
-    max-width: 140px;
+    height: 76px;
+    max-width: 170px;
   }
 
   .nav-links {
@@ -1186,7 +1196,7 @@ footer {
   }
   .form {
     padding: 20px;
-    padding-left: 28px;
+    padding-left: 40px;
   }
 
   .form input,
@@ -1218,6 +1228,11 @@ footer {
     height: 24px;
   }
 
+  .footer-line .logo-icon {
+    height: 70px;
+    max-width: 170px;
+  }
+
   .addons-panel {
     padding: 14px;
   }
@@ -1232,5 +1247,11 @@ footer {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: inset(0 0 0 0) !important;
   }
 }
