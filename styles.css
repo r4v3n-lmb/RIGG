@@ -1065,8 +1065,8 @@ footer {
 
   .form {
     justify-self: center;
-    padding-top: 32px;
-    padding-left: 56px;
+    padding-top: 48px;
+    padding-left: 100px;
     padding-right: 16px;
   }
 
@@ -1199,8 +1199,8 @@ footer {
   }
   .form {
     padding: 20px;
-    padding-top: 32px;
-    padding-left: 56px;
+    padding-top: 48px;
+    padding-left: 72px;
   }
 
   .form input,
