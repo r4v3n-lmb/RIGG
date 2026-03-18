@@ -97,25 +97,9 @@ video {
   font-weight: 600;
 }
 
-.announcement-link {
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--text);
-  color: var(--text);
+.announcement-units {
   font-weight: 600;
-  letter-spacing: 0.12em;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.announcement-link:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
-}
-
-.counter-live {
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text);
 }
 
 .site-header {
@@ -247,9 +231,12 @@ video {
 }
 
 .hero-content {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  max-width: 760px;
+  width: 100%;
+  display: grid;
+  place-content: center;
   padding: 0 6vw;
 }
 
@@ -267,12 +254,14 @@ video {
   text-transform: uppercase;
   line-height: 1.05;
   margin-top: 18px;
+  text-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
 }
 
 .hero-sub {
   margin-top: 16px;
   font-size: 1rem;
   color: var(--muted);
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
 }
 
 .hero-actions {
@@ -419,10 +408,41 @@ video {
   margin-top: 32px;
 }
 
-.media-full video {
+.media-full video,
+.media-full .video-placeholder {
   width: 100%;
   height: min(70vh, 720px);
   object-fit: cover;
+}
+
+.video-placeholder {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 48px 8vw;
+  background: radial-gradient(800px 400px at 50% 0%, rgba(255, 255, 255, 0.08), transparent 70%),
+    rgba(8, 8, 8, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.video-eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.video-placeholder h3 {
+  font-family: "Rajdhani", "Sora", sans-serif;
+  font-size: clamp(1.8rem, 2vw + 1rem, 2.8rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.video-placeholder p {
+  color: var(--muted);
 }
 
 .gallery-section {
@@ -479,6 +499,45 @@ video {
 .pricing-note {
   margin-top: 6px;
   color: var(--muted);
+}
+
+.pricing-meta {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.pricing-deposit,
+.pricing-social {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: rgba(10, 10, 10, 0.8);
+  display: grid;
+  gap: 6px;
+}
+
+.pricing-caption {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.social-proof {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.pricing-actions {
+  display: grid;
+  gap: 10px;
+  align-items: center;
+}
+
+.pricing-cta-note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 280px;
 }
 
 .preorder {
@@ -797,6 +856,26 @@ footer {
   gap: 12px;
 }
 
+.footer-meta {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
 .footer-socials {
   display: flex;
   gap: 12px;
@@ -889,6 +968,10 @@ footer {
   .pricing-card {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .pricing-actions {
+    width: 100%;
   }
 }
 
