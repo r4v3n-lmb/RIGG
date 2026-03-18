@@ -22,15 +22,15 @@
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body data-launch="2026-04-30T23:59:00+02:00">
     <div class="announcement" role="status">
       <span class="announcement-tag">Founder Drop</span>
       <span class="announcement-copy">
-        Only <span class="counter-value">23</span><span class="counter-total">/50 Units</span> · Launch in
-        <span id="launch-countdown" class="announcement-countdown" aria-live="polite">April 30</span>
+        Launch in <span id="launch-countdown" class="announcement-countdown" aria-live="polite">April 30</span>
       </span>
-      <span class="counter-live">Live count · Updated today</span>
-      <a class="announcement-link" href="#preorder">Reserve now</a>
+      <span class="announcement-units">
+        <span class="counter-value">23</span><span class="counter-total">/50 Units</span>
+      </span>
     </div>
 
     <header class="site-header">
@@ -44,7 +44,7 @@
           <a class="nav-link" href="#video">Video</a>
           <a class="nav-link" href="#gallery">Gallery</a>
           <a class="nav-link" href="#pricing">Pricing</a>
-          <a class="nav-link nav-link-cta" href="#preorder">Reserve now</a>
+          <a class="nav-link nav-link-cta" href="#preorder">Claim my spot</a>
         </nav>
       </div>
     </header>
@@ -63,7 +63,7 @@
             focused sets.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#preorder">Reserve now</a>
+            <a class="button primary" href="#preorder">Reserve my founder unit</a>
             <a class="button secondary" href="#features">Learn more</a>
           </div>
         </div>
@@ -141,24 +141,26 @@
           <h2>Product in motion.</h2>
         </div>
         <div class="media-full">
-          <video autoplay muted loop playsinline poster="assets/teaser-poster.svg">
-            <source src="assets/teaser.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <div class="video-placeholder">
+            <p class="video-eyebrow">Video coming soon</p>
+            <h3>Reserve early. Founder units are limited.</h3>
+            <p>We will drop the full product film ahead of launch.</p>
+            <a class="button primary" href="#preorder">Reserve my founder unit</a>
+          </div>
         </div>
       </section>
 
       <section id="gallery" class="section gallery-section">
         <div class="container">
           <h2>Gallery</h2>
-          <p class="lead">Close-ups and system details.</p>
+          <p class="lead">Close-ups of the carry system and magnetic dock.</p>
         </div>
         <div class="gallery-track" aria-label="RIGG Core V1 gallery">
-          <img src="assets/gallery-1.svg" alt="RIGG detail view" />
-          <img src="assets/gallery-2.svg" alt="RIGG signal UI" />
-          <img src="assets/gallery-3.svg" alt="RIGG component view" />
-          <img src="assets/gallery-1.svg" alt="RIGG magnetic dock" />
-          <img src="assets/gallery-2.svg" alt="RIGG storage layout" />
+          <img src="assets/gallery-1.svg" alt="RIGG shell detail view" />
+          <img src="assets/gallery-2.svg" alt="RIGG magnetic dock close-up" />
+          <img src="assets/gallery-3.svg" alt="RIGG interior layout" />
+          <img src="assets/gallery-1.svg" alt="RIGG attachment system detail" />
+          <img src="assets/gallery-2.svg" alt="RIGG storage pockets" />
           <img src="assets/gallery-3.svg" alt="RIGG carry profile" />
         </div>
       </section>
@@ -174,9 +176,27 @@
                 <span data-price="full">R399.99</span>
                 <span data-price="original" class="strikethrough">R599.99</span>
               </p>
-              <p class="pricing-note">Pay R150 now, R250 at launch.</p>
+              <p class="pricing-note">Founder price includes a refundable deposit.</p>
+              <div class="pricing-meta">
+                <div class="pricing-deposit">
+                  <span class="label">Deposit today</span>
+                  <span data-price="deposit">R150.00</span>
+                  <span class="pricing-caption">Applied to your total.</span>
+                </div>
+                <div class="pricing-social">
+                  <span class="label">Founder drop</span>
+                  <span class="social-proof">
+                    Join <span class="counter-value">23</span> founders who already reserved.
+                  </span>
+                </div>
+              </div>
             </div>
-            <a class="button primary" href="#preorder">Reserve now</a>
+            <div class="pricing-actions">
+              <a class="button primary" href="#preorder">Reserve my founder unit</a>
+              <p class="pricing-cta-note">
+                Pay R150 now, balance of R250 at launch. Fully refundable if we don't ship.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -209,9 +229,9 @@
               <span id="deposit-price">R150.00</span>
             </div>
           </div>
-          <p class="deposit-note">
-            Pay R150 now, R250 at launch. Deposit counts toward the full price. Cancel anytime
-            before launch.
+        <p class="deposit-note">
+            Pay R150 now, R250 at launch. Deposit counts toward the full price. Fully refundable if
+            we don't ship.
           </p>
         </div>
         <form class="form" id="preorder-form">
@@ -318,7 +338,14 @@
         <div class="logo">
           <img class="logo-icon" src="assets/rigg-logo.png" alt="RIGG icon" />
         </div>
-        <p class="small">Everything You Need. Nothing You Don't.</p>
+        <div class="footer-meta">
+          <p class="small">Everything You Need. Nothing You Don't.</p>
+          <div class="footer-links">
+            <a href="mailto:noreply.rigg@gmail.com">Contact</a>
+            <a href="https://instagram.com">Instagram</a>
+            <a href="#preorder">Refunds & FAQ</a>
+          </div>
+        </div>
         <div class="footer-socials">
           <a href="mailto:noreply.rigg@gmail.com" aria-label="Email RIGG">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
