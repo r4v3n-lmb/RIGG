@@ -56,6 +56,13 @@ video {
   margin: 0 auto;
 }
 
+.container.full-width {
+  width: 100%;
+  max-width: none;
+  padding-left: clamp(16px, 4vw, 40px);
+  padding-right: clamp(16px, 4vw, 40px);
+}
+
 header {
   position: sticky;
   top: 0;
@@ -604,6 +611,16 @@ header {
   text-transform: uppercase;
 }
 
+.form .form-submit.error,
+.form .form-submit.error::before,
+.form .form-submit.error::after {
+  background: #d94b4b;
+}
+
+.form .form-submit.error {
+  color: #fff;
+}
+
 .form .wrapper li,
 .form .wrapper .form-submit {
   position: relative;
@@ -717,6 +734,12 @@ header {
 .form .form-submit:hover::before,
 .form .form-submit:hover::after {
   background: #575cb5;
+}
+
+.form .form-submit.error:hover,
+.form .form-submit.error:hover::before,
+.form .form-submit.error:hover::after {
+  background: #d94b4b;
 }
 
 .form .form-submit:active {
@@ -855,9 +878,9 @@ footer {
 }
 
 .footer-line {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -865,18 +888,23 @@ footer {
 
 .footer-socials {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .footer-socials a {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   border: 1px solid var(--border);
   display: grid;
   place-items: center;
   color: var(--muted);
   transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-socials svg {
+  width: 22px;
+  height: 22px;
 }
 
 .footer-socials a:hover {
@@ -893,6 +921,8 @@ footer {
 .footer-line .small {
   text-transform: uppercase;
   letter-spacing: 0.12em;
+  text-align: center;
+  justify-self: center;
 }
 
 main > section,
@@ -978,6 +1008,11 @@ footer {
     gap: 12px;
   }
 
+  .nav .logo-icon {
+    height: 68px;
+    max-width: 150px;
+  }
+
   .logo {
     justify-content: center;
   }
@@ -1023,6 +1058,8 @@ footer {
 
   .form {
     justify-self: center;
+    padding-left: 28px;
+    padding-right: 16px;
   }
 
   .grid {
@@ -1039,8 +1076,25 @@ footer {
   }
 
   .footer-line {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .footer-socials {
+    order: 1;
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .footer-line .small {
+    order: 2;
+  }
+
+  .footer-line .logo {
+    order: 3;
+    justify-self: center;
   }
 
   .ecosystem-flow {
@@ -1059,13 +1113,16 @@ footer {
   .roadmap-row {
     grid-template-columns: 1fr;
     direction: ltr;
+    gap: 32px;
   }
 
 
   .roadmap-row .ecosystem-card::after {
     content: "↓";
-    display: block;
-    margin: 14px auto 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -26px;
     font-size: 1.3rem;
     color: rgba(232, 241, 255, 0.35);
   }
@@ -1103,9 +1160,9 @@ footer {
     width: min(1120px, 92vw);
   }
 
-  .logo-icon {
-    height: 48px;
-    max-width: 110px;
+  .nav .logo-icon {
+    height: 62px;
+    max-width: 140px;
   }
 
   .nav-links {
@@ -1129,6 +1186,7 @@ footer {
   }
   .form {
     padding: 20px;
+    padding-left: 28px;
   }
 
   .form input,
@@ -1148,6 +1206,16 @@ footer {
 
   .footer-line {
     gap: 10px;
+  }
+
+  .footer-socials a {
+    width: 48px;
+    height: 48px;
+  }
+
+  .footer-socials svg {
+    width: 24px;
+    height: 24px;
   }
 
   .addons-panel {

@@ -105,91 +105,110 @@ try {
 
 if (form) {
   form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const submitButton = form.querySelector('button[type="submit"]');
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.textContent = "Processing...";
-  }
-  const data = {
-    name: form.name.value.trim(),
-    surname: form.surname.value.trim(),
-    email: form.email.value.trim(),
-    number: form.number.value.trim(),
-    currency: CURRENCY,
-    full_price: FULL_PRICE,
-    deposit_amount: DEPOSIT,
-    paid: false,
-    payment_reference: null,
-    locale: navigator.language || "en-US",
-    region: (navigator.language || "en-US").split("-")[1] || "US",
-  };
-
-  if (!data.email && !data.number) {
-    status.textContent = "Please provide an email or number.";
+    event.preventDefault();
+    const submitButton = form.querySelector('button[type="submit"]');
+    const setSubmitError = () => {
+      if (submitButton) {
+        submitButton.classList.add("error");
+      }
+    };
+    const clearSubmitError = () => {
+      if (submitButton) {
+        submitButton.classList.remove("error");
+      }
+    };
+    clearSubmitError();
     if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.textContent = "Pre-order now";
+      submitButton.disabled = true;
+      submitButton.textContent = "Processing...";
     }
-    return;
-  }
+    const nameInput = form.querySelector('[name="name"]');
+    const surnameInput = form.querySelector('[name="surname"]');
+    const emailInput = form.querySelector('[name="email"]');
+    const numberInput = form.querySelector('[name="number"]');
+    const data = {
+      name: nameInput ? nameInput.value.trim() : "",
+      surname: surnameInput ? surnameInput.value.trim() : "",
+      email: emailInput ? emailInput.value.trim() : "",
+      number: numberInput ? numberInput.value.trim() : "",
+      currency: CURRENCY,
+      full_price: FULL_PRICE,
+      deposit_amount: DEPOSIT,
+      paid: false,
+      payment_reference: null,
+      locale: navigator.language || "en-US",
+      region: (navigator.language || "en-US").split("-")[1] || "US",
+    };
+
+    if (!data.email && !data.number) {
+      status.textContent = "Please provide an email or number.";
+      setSubmitError();
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Pre-order now";
+      }
+      return;
+    }
 
     status.textContent = "Submitting your pre-order...";
 
     try {
-    if (!db) {
-      throw new Error("Firestore not available.");
-    }
-    if (!window.PaystackPop) {
-      throw new Error("Paystack not available.");
+      if (!db) {
+        throw new Error("Firestore not available.");
+      }
+      if (!window.PaystackPop) {
+        throw new Error("Paystack not available.");
       }
 
-    const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    data.payment_reference = reference;
-    const digits = data.number.replace(/\D/g, "");
-    const paystackEmail = data.email || `noreply.rigg+${digits || "contact"}@gmail.com`;
+      const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      data.payment_reference = reference;
+      const digits = data.number.replace(/\D/g, "");
+      const paystackEmail = data.email || `noreply.rigg+${digits || "contact"}@gmail.com`;
 
-    const docRef = await db.collection("preorders").add({
-      ...data,
-      created_at: new Date().toISOString(),
-    });
+      const docRef = await db.collection("preorders").add({
+        ...data,
+        created_at: new Date().toISOString(),
+      });
 
-    const amount = Math.round(DEPOSIT * 100);
-    const handler = PaystackPop.setup({
-      key: PAYSTACK_PUBLIC_KEY,
-      email: paystackEmail,
-      amount,
-      currency: CURRENCY,
-      ref: reference,
-      callback: async (response) => {
-        const verifyResponse = await fetch(VERIFY_PAYSTACK_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reference: response.reference,
-            email: data.email,
-            docId: docRef.id,
-          }),
-        });
+      const amount = Math.round(DEPOSIT * 100);
+      const handler = PaystackPop.setup({
+        key: PAYSTACK_PUBLIC_KEY,
+        email: paystackEmail,
+        amount,
+        currency: CURRENCY,
+        ref: reference,
+        callback: async (response) => {
+          const verifyResponse = await fetch(VERIFY_PAYSTACK_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              reference: response.reference,
+              email: data.email,
+              docId: docRef.id,
+            }),
+          });
 
-        if (!verifyResponse.ok) {
-          status.textContent = "Payment received, but verification failed. Please contact support.";
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = "Pre-order now";
+          if (!verifyResponse.ok) {
+            status.textContent = "Payment received, but verification failed. Please contact support.";
+            setSubmitError();
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = "Pre-order now";
+            }
+            return;
           }
-          return;
-        }
 
-        status.textContent = "Payment received. Your founders spot is confirmed.";
-        await refreshCounter();
-        form.reset();
-        updatePrice();
-      },
+          status.textContent = "Payment received. Your founders spot is confirmed.";
+          clearSubmitError();
+          await refreshCounter();
+          form.reset();
+          updatePrice();
+        },
         onClose: () => {
           status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
+          clearSubmitError();
           if (submitButton) {
             submitButton.disabled = false;
             submitButton.textContent = "Pre-order now";
@@ -199,7 +218,8 @@ if (form) {
 
       handler.openIframe();
     } catch (error) {
-      status.textContent = "Something went wrong. Please try again.";
+      status.textContent = "";
+      setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.textContent = "Pre-order now";
