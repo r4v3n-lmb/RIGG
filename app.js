@@ -197,7 +197,7 @@ if (form) {
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
-      submitButton.textContent = "RESERVE NOW";
+      submitButton.textContent = "RESERVE";
       }
       return;
     }
@@ -247,7 +247,7 @@ if (form) {
             setSubmitError();
             if (submitButton) {
               submitButton.disabled = false;
-              submitButton.textContent = "RESERVE NOW";
+              submitButton.textContent = "RESERVE";
             }
             return;
           }
@@ -263,7 +263,7 @@ if (form) {
           clearSubmitError();
           if (submitButton) {
             submitButton.disabled = false;
-            submitButton.textContent = "RESERVE NOW";
+            submitButton.textContent = "RESERVE";
           }
         },
       });
@@ -274,7 +274,7 @@ if (form) {
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = "RESERVE NOW";
+        submitButton.textContent = "RESERVE";
       }
     }
   });
