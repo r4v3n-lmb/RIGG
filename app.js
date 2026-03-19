@@ -343,20 +343,6 @@ window.addEventListener("scroll", updateHeaderState, { passive: true });
 window.addEventListener("resize", updateAnnouncementHeight);
 window.addEventListener("load", updateAnnouncementHeight);
 
-const addonsToggle = document.querySelector(".addons-toggle");
-const addonsPanel = document.getElementById("ecosystem-panel");
-if (addonsToggle && addonsPanel) {
-  addonsToggle.addEventListener("click", () => {
-    const isOpen = addonsToggle.getAttribute("aria-expanded") === "true";
-    addonsToggle.setAttribute("aria-expanded", String(!isOpen));
-    if (isOpen) {
-      addonsPanel.hidden = true;
-    } else {
-      addonsPanel.hidden = false;
-    }
-  });
-}
-
 const ecosystemCards = Array.from(document.querySelectorAll(".ecosystem-card"));
 if (ecosystemCards.length) {
   const toggleCard = (card) => {
@@ -402,4 +388,16 @@ if (faqItems.length) {
       });
     }
   });
+}
+
+const galleryTrack = document.querySelector(".gallery-track");
+if (galleryTrack) {
+  // Duplicate gallery items for seamless scroll animation
+  const galleryItems = Array.from(galleryTrack.children);
+  galleryItems.forEach((item) => {
+    const clone = item.cloneNode(true);
+    clone.setAttribute("aria-hidden", "true");
+    galleryTrack.appendChild(clone);
+  });
+  galleryTrack.classList.add("autoscroll");
 }

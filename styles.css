@@ -216,7 +216,7 @@ video {
   padding: calc(120px + var(--announce-height)) 0 80px;
   overflow: hidden;
   background: linear-gradient(180deg, rgba(5, 5, 5, 0.62), rgba(5, 5, 5, 0.9)),
-    url("assets/20260319_0815_Active Lifestyle Collage_remix_01km2bqny4fc684tpsj5km2322.png") center / cover no-repeat;
+    url("assets/20260319_0815_Active Lifestyle Collage_remix_01km2bqny4fc684tpsj5km2322.webp") 50% 35% / cover no-repeat;
 }
 
 .hero::before {
@@ -341,12 +341,12 @@ video {
   margin-bottom: 18px;
 }
 
-.specs {
-  padding-bottom: 0;
+.features-group {
+  margin-top: 80px;
 }
 
-#features {
-  padding-top: 40px;
+#roadmap {
+  padding-top: 20px;
 }
 
 .section p.lead {
@@ -503,6 +503,7 @@ video {
 
 .gallery-section {
   padding-bottom: 80px;
+  overflow: hidden;
 }
 
 .gallery-track {
@@ -512,25 +513,32 @@ video {
   grid-auto-flow: column;
   grid-auto-columns: minmax(70vw, 1fr);
   gap: 24px;
-  overflow-x: auto;
   padding: 24px 6vw 0;
-  scroll-snap-type: x mandatory;
-}
-
-.gallery-track::-webkit-scrollbar {
-  height: 0;
-}
-
-.gallery-track {
-  scrollbar-width: none;
 }
 
 .gallery-track img {
   border-radius: 18px;
   height: min(70vh, 680px);
   object-fit: cover;
-  scroll-snap-align: center;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gallery-track.autoscroll {
+  /* Adjust the duration to control the scroll speed (e.g., 60s is slow, 30s is faster) */
+  animation: autoscroll-gallery 60s linear infinite;
+}
+
+.gallery-track.autoscroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes autoscroll-gallery {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 .pricing-card {
@@ -815,14 +823,6 @@ video {
   margin-top: 18px;
   display: grid;
   gap: 12px;
-}
-
-.addons-toggle {
-  width: 100%;
-  justify-content: center;
-  background: rgba(10, 10, 10, 0.8);
-  border: 1px solid var(--line);
-  color: var(--text);
 }
 
 .addons-panel {
