@@ -92,8 +92,9 @@ const refreshCounter = async () => {
     const snapshot = await db.collection("preorders").where("paid", "==", true).get();
     const max = getMaxUnits();
     const count = Math.min(snapshot.size ?? 0, max);
+    const remaining = max - count;
     counterValues.forEach((el) => {
-      el.textContent = String(count);
+      el.textContent = String(remaining);
     });
   } catch (error) {
     // Keep existing value if count fetch fails.
@@ -378,5 +379,27 @@ if (ecosystemCards.length) {
         toggleCard(card);
       }
     });
+  });
+}
+
+const faqItems = Array.from(document.querySelectorAll(".faq-item"));
+if (faqItems.length) {
+  const toggleFaq = (item) => {
+    const isExpanded = item.classList.toggle("expanded");
+    item.setAttribute("aria-expanded", isExpanded);
+  };
+
+  faqItems.forEach((item) => {
+    item.setAttribute("aria-expanded", "false");
+    const question = item.querySelector(".faq-question");
+    if (question) {
+      question.addEventListener("click", () => toggleFaq(item));
+      question.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggleFaq(item);
+        }
+      });
+    }
   });
 }
