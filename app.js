@@ -19,10 +19,16 @@ let revealsInitialized = false;
 
 const countdownEl = document.getElementById("launch-countdown");
 const updateCountdown = () => {
-  if (!countdownEl || Number.isNaN(LAUNCH_TARGET.getTime())) return;
+  if (!countdownEl) return;
+
+  if (Number.isNaN(LAUNCH_TARGET.getTime())) {
+    countdownEl.textContent = "Coming Soon";
+    return;
+  }
+
   const diff = LAUNCH_TARGET.getTime() - Date.now();
   if (diff <= 0) {
-    countdownEl.textContent = "now";
+    countdownEl.textContent = "Live Now";
     return;
   }
   const totalSeconds = Math.floor(diff / 1000);
@@ -95,10 +101,32 @@ const refreshCounter = async () => {
     const remaining = max - count;
     counterValues.forEach((el) => {
       el.textContent = String(remaining);
+      el.classList.remove("updated");
+      void el.offsetWidth; // Force reflow to restart animation
+      el.classList.add("updated");
     });
   } catch (error) {
     // Keep existing value if count fetch fails.
   }
+};
+
+const formatSpecs = () => {
+  document.querySelectorAll(".spec-value").forEach((el) => {
+    // Skip if already formatted or doesn't look like a list
+    if (!el.textContent.includes(",") || el.querySelector(".spec-chip")) return;
+    
+    const items = el.textContent.split(",").map((t) => t.trim()).filter(Boolean);
+    if (items.length > 1) {
+      el.innerHTML = "";
+      el.classList.add("spec-chips");
+      items.forEach((text) => {
+        const span = document.createElement("span");
+        span.className = "spec-chip";
+        span.textContent = text;
+        el.appendChild(span);
+      });
+    }
+  });
 };
 
 const initPricing = () => {
@@ -106,6 +134,7 @@ const initPricing = () => {
   updatePrice();
   refreshCounter();
   updateCountdown();
+  formatSpecs();
   if (!revealsInitialized) {
     setupScrollReveals();
     revealsInitialized = true;
@@ -220,6 +249,7 @@ if (form) {
     }
 
     status.textContent = "Submitting your reservation...";
+    status.className = "form-status submitting";
 
     try {
       if (!db) {
@@ -261,6 +291,7 @@ if (form) {
 
           if (!verifyResponse.ok) {
             status.textContent = "Payment received, but verification failed. Please contact support.";
+            status.className = "form-status error";
             setSubmitError();
             if (submitButton) {
               submitButton.disabled = false;
@@ -270,6 +301,7 @@ if (form) {
           }
 
           status.textContent = "Payment received. Your founders spot is confirmed.";
+          status.className = "form-status success";
           clearSubmitError();
           await refreshCounter();
           form.reset();
@@ -277,6 +309,7 @@ if (form) {
         },
         onClose: () => {
           status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
+          status.className = "form-status error";
           clearSubmitError();
           if (submitButton) {
             submitButton.disabled = false;
@@ -288,6 +321,7 @@ if (form) {
       handler.openIframe();
     } catch (error) {
       status.textContent = "";
+      status.className = "form-status";
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
@@ -422,3 +456,202 @@ if (galleryTrack) {
     document.body.style.overflow = "";
   });
 }
+
+const wireCtas = () => {
+  const candidates = document.querySelectorAll(".button, a[href='#preorder-form']");
+  candidates.forEach((btn) => {
+    if (form && form.contains(btn)) return; // Skip actual submit button
+
+    const text = btn.textContent.toLowerCase();
+    const shouldWire =
+      btn.getAttribute("href") === "#preorder-form" ||
+      text.includes("reserve") ||
+      text.includes("notify") ||
+      text.includes("claim");
+
+    if (shouldWire) {
+      btn.addEventListener("click", (e) => {
+        // If it's a link to something else, don't hijack
+        if (btn.tagName === "A") {
+          const href = btn.getAttribute("href");
+          if (href && href !== "#" && href !== "#preorder-form") return;
+        }
+
+        e.preventDefault();
+        if (form) {
+          form.scrollIntoView({ behavior: "smooth", block: "center" });
+          const input = form.querySelector("input");
+          if (input) setTimeout(() => input.focus({ preventScroll: true }), 500);
+        }
+      });
+    }
+  });
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", wireCtas);
+} else {
+  wireCtas();
+}
+
+const initVideos = () => {
+  const videos = document.querySelectorAll("video");
+  videos.forEach((video) => {
+    if (video.readyState >= 3) {
+      video.classList.add("loaded");
+    } else {
+      video.addEventListener("canplay", () => video.classList.add("loaded"), { once: true });
+    }
+  });
+};
+
+window.addEventListener("load", initVideos);
+
+const initSmoothScrollFeedback = () => {
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+
+    const id = link.getAttribute("href").substring(1);
+    if (!id) return;
+
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.remove("section-highlight");
+      void target.offsetWidth; // Force reflow
+      target.classList.add("section-highlight");
+    }
+  });
+};
+
+initSmoothScrollFeedback();
+
+const clarifyProduct = () => {
+  const heroHeader = document.querySelector(".hero h1");
+  if (heroHeader && !document.querySelector(".product-tagline")) {
+    const tag = document.createElement("div");
+    tag.className = "product-tagline";
+    tag.textContent = "Magnetic Gym Caddy & Organizer";
+    heroHeader.parentNode.insertBefore(tag, heroHeader);
+  }
+};
+
+window.addEventListener("DOMContentLoaded", clarifyProduct);
+
+const populateFAQ = () => {
+  const faqList = document.querySelector(".faq-list");
+  if (!faqList) return;
+
+  const faqs = [
+    {
+      question: "When will my order ship?",
+      answer:
+        "We are targeting to begin shipping Founder's Edition units in Late Q2 2024. You will receive a shipping notification when your order is on the way.",
+    },
+    {
+      question: "What happens if there are delays?",
+      answer:
+        "We are working hard to meet our shipping target. If any delays occur, we will communicate updates promptly via email and on our website.",
+    },
+    {
+      question: "Is my deposit refundable?",
+      answer:
+        "Yes, your deposit is fully refundable until the point your order ships. If you wish to cancel your reservation, please contact our support team.",
+    },
+  ];
+
+  faqs.forEach((faq) => {
+    const item = document.createElement("div");
+    item.className = "faq-item";
+    item.innerHTML = `
+      <div class="faq-question">${faq.question}</div>
+      <div class="faq-answer">${faq.answer}</div>
+    `;
+    faqList.appendChild(item);
+  });
+    initFaqToggles(); // Initialize the toggle functionality for the new FAQ items
+};
+
+window.addEventListener("DOMContentLoaded", populateFAQ);
+
+
+
+const simplifyTerminology = () => {
+  const headings = document.querySelectorAll("h2");
+  headings.forEach((h2) => {
+    if (h2.textContent.includes("Ecosystem Roadmap")) {
+      h2.textContent = "Roadmap";
+    }
+  });
+};
+
+window.addEventListener("DOMContentLoaded", simplifyTerminology);
+
+const clarifySpecs = () => {
+  const specCards = document.querySelectorAll(".spec-card");
+  specCards.forEach((card) => {
+    const text = card.textContent.toLowerCase();
+    if (text.includes("scratch-proof") && !card.querySelector(".spec-note")) {
+      const note = document.createElement("span");
+      note.className = "spec-note";
+      note.textContent = "Body & Docking Interface";
+      card.appendChild(note);
+    } else if (text.includes("magnetic") && !card.querySelector(".spec-note")) {
+      const note = document.createElement("span");
+      note.className = "spec-note";
+      note.textContent = "Universal (Bare Steel & Rubber)";
+      card.appendChild(note);
+    }
+  });
+};
+
+window.addEventListener("DOMContentLoaded", clarifySpecs);
+
+const addFeatureDetails = () => {
+  const featureCards = document.querySelectorAll("#features .card");
+  const details = {
+    "Magnetic Dock":
+      "Instantly snap RIGG to any gym rack, keeping your gear off the floor and exactly where you need it. No more bending down or searching for your bottle.",
+    "Everything in Reach":
+      "Dedicated slots for your phone, wallet, keys, and bottle mean no more fumbling. Everything has its place, so you can focus on your workout.",
+    "Built Tough":
+      "Constructed with a scratch-proof shell and water-resistant materials, RIGG is designed to handle the toughest gym environments, day in and day out.",
+  };
+
+  featureCards.forEach((card) => {
+    const titleEl = card.querySelector("h3");
+    const descEl = card.querySelector("p");
+    if (titleEl && descEl) {
+      const titleText = titleEl.textContent.trim();
+      if (details[titleText]) {
+        descEl.textContent = details[titleText];
+      }
+    }
+  });
+};
+
+window.addEventListener("DOMContentLoaded", addFeatureDetails);
+
+const enhanceFounderIdentity = () => {
+  const pricingCard = document.querySelector(".pricing-card");
+  if (pricingCard && !pricingCard.querySelector(".founder-explainer")) {
+    const explainer = document.createElement("div");
+    explainer.className = "founder-explainer";
+    explainer.innerHTML = `
+      <p>
+        <strong>Become a Co-Creator</strong>
+        Founders receive a sequentially numbered unit from the first batch and gain voting rights on future ecosystem modules. You help shape what we build next.
+      </p>
+    `;
+
+    // Insert before the pricing meta (deposit/social proof section)
+    const metaSection = pricingCard.querySelector(".pricing-meta");
+    if (metaSection) {
+      pricingCard.insertBefore(explainer, metaSection);
+    } else {
+      pricingCard.appendChild(explainer);
+    }
+  }
+};
+
+window.addEventListener("DOMContentLoaded", enhanceFounderIdentity);
