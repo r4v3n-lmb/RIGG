@@ -541,40 +541,64 @@ const clarifyProduct = () => {
 window.addEventListener("DOMContentLoaded", clarifyProduct);
 
 const populateFAQ = () => {
-  const faqList = document.querySelector(".faq-list");
-  if (!faqList) return;
+  const note = document.querySelector(".deposit-note");
+  if (!note) return;
+  const depositSection = note.parentElement;
 
   const faqs = [
     {
+      label: "Shipping?",
       question: "When will my order ship?",
       answer:
         "We are targeting to begin shipping Founder's Edition units in Late Q2 2024. You will receive a shipping notification when your order is on the way.",
     },
     {
+      label: "Delays?",
       question: "What happens if there are delays?",
       answer:
         "We are working hard to meet our shipping target. If any delays occur, we will communicate updates promptly via email and on our website.",
     },
     {
+      label: "Refunds?",
       question: "Is my deposit refundable?",
       answer:
         "Yes. If you change your mind for any reason before your unit ships, you can request a full refund of your deposit. No questions asked.",
     },
   ];
 
+  const pillsContainer = document.createElement("div");
+  pillsContainer.className = "trust-pills";
+
+  const answerBox = document.createElement("div");
+  answerBox.className = "trust-answer";
+
   faqs.forEach((faq) => {
-    const item = document.createElement("div");
-    item.className = "faq-item";
-    item.innerHTML = `
-      <div class="faq-question">${faq.question}</div>
-      <div class="faq-answer">${faq.answer}</div>
-    `;
-    faqList.appendChild(item);
+    const btn = document.createElement("button");
+    btn.textContent = faq.label;
+    btn.type = "button";
+    btn.addEventListener("click", () => {
+      const isSame = answerBox.textContent === faq.answer && answerBox.style.display === "block";
+      pillsContainer.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      if (isSame) {
+        answerBox.style.display = "none";
+      } else {
+        btn.classList.add("active");
+        answerBox.textContent = faq.answer;
+        answerBox.style.display = "block";
+      }
+    });
+    pillsContainer.appendChild(btn);
   });
-    initFaqToggles(); // Initialize the toggle functionality for the new FAQ items
+
+  depositSection.appendChild(pillsContainer);
+  depositSection.appendChild(answerBox);
 };
 
-window.addEventListener("DOMContentLoaded", populateFAQ);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", populateFAQ);
+} else {
+  populateFAQ();
+}
 
 
 
@@ -656,4 +680,8 @@ const enhanceFounderIdentity = () => {
   }
 };
 
-window.addEventListener("DOMContentLoaded", enhanceFounderIdentity);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", enhanceFounderIdentity);
+} else {
+  enhanceFounderIdentity();
+}

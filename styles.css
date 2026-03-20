@@ -891,11 +891,38 @@ label.input-label {
   color: var(--muted);
 }
 
-.trust-pills span {
+.trust-pills span,
+.trust-pills button {
   padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(10, 10, 10, 0.7);
+  color: var(--muted);
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.trust-pills button {
+  cursor: pointer;
+}
+
+.trust-pills button:hover,
+.trust-pills button.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.trust-answer {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+  display: none;
+  animation: form-field-fade-in 0.3s var(--ease-out);
 }
 
 .email-fallback {
