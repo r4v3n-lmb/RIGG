@@ -402,14 +402,16 @@ if (ecosystemCards.length) {
   });
 }
 
-const faqItems = Array.from(document.querySelectorAll(".faq-item"));
-if (faqItems.length) {
+const initFaqToggles = () => {
+  const faqItems = Array.from(document.querySelectorAll(".faq-item"));
   const toggleFaq = (item) => {
     const isExpanded = item.classList.toggle("expanded");
     item.setAttribute("aria-expanded", isExpanded);
   };
 
   faqItems.forEach((item) => {
+    if (item.dataset.bound) return;
+    item.dataset.bound = "true";
     item.setAttribute("aria-expanded", "false");
     const question = item.querySelector(".faq-question");
     if (question) {
@@ -422,7 +424,7 @@ if (faqItems.length) {
       });
     }
   });
-}
+};
 
 const galleryTrack = document.querySelector(".gallery-track");
 if (galleryTrack) {
@@ -556,7 +558,7 @@ const populateFAQ = () => {
     {
       question: "Is my deposit refundable?",
       answer:
-        "Yes, your deposit is fully refundable until the point your order ships. If you wish to cancel your reservation, please contact our support team.",
+        "Yes. If you change your mind for any reason before your unit ships, you can request a full refund of your deposit. No questions asked.",
     },
   ];
 

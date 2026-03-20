@@ -25,7 +25,7 @@
 - [x] **Technical Specificity:**
     - Define "Scratch-proof" (Shell? Dock? inner lining?).
     - Define "Magnetic rack mount" compatibility (Works on rubber-coated racks? Bare steel only?).
-- [ ] **Refund Policy:** Reconcile the statements "fully refundable if we don't ship" vs "deposit refundable before launch". Clarify the "change of mind" policy.
+- [x] **Refund Policy:** Reconcile the statements "fully refundable if we don't ship" vs "deposit refundable before launch". Clarify the "change of mind" policy.
 - [x] **FAQ:** Ensure the FAQ section (referenced in Nav) is actually populated with 3-4 core questions to reduce purchase anxiety.
 ```
 
