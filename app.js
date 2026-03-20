@@ -399,5 +399,26 @@ if (galleryTrack) {
     clone.setAttribute("aria-hidden", "true");
     galleryTrack.appendChild(clone);
   });
-  galleryTrack.classList.add("autoscroll");
+
+  // Lightbox logic
+  const lightbox = document.createElement("div");
+  lightbox.className = "lightbox";
+  const lightboxImg = document.createElement("img");
+  lightbox.appendChild(lightboxImg);
+  document.body.appendChild(lightbox);
+
+  galleryTrack.addEventListener("click", (e) => {
+    if (e.target.tagName === "IMG") {
+      lightboxImg.src = e.target.src;
+      lightbox.classList.add("active");
+      galleryTrack.classList.add("paused");
+      document.body.style.overflow = "hidden";
+    }
+  });
+
+  lightbox.addEventListener("click", () => {
+    lightbox.classList.remove("active");
+    galleryTrack.classList.remove("paused");
+    document.body.style.overflow = "";
+  });
 }
