@@ -2943,3 +2943,48 @@ footer {
   .bag-preview[data-type="motto"] .bag-text   { font-size: 0.95rem; }
 }
 
+/* ── Sports strip ───────────────────────────────────────────── */
+.sports-strip {
+  overflow: hidden;
+  padding: 13px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.sports-track {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  width: max-content;
+  animation: sports-scroll 32s linear infinite;
+}
+
+.sports-track span {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.sport-sep {
+  color: rgba(255,255,255,0.15) !important;
+  letter-spacing: 0 !important;
+}
+
+.sports-strip:hover .sports-track {
+  animation-play-state: paused;
+}
+
+@keyframes sports-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sports-track { animation: none; }
+}
+
