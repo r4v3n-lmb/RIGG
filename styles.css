@@ -2246,6 +2246,443 @@ footer {
   width: 100%;
 }
 
+/* ── Configurator modal ────────────────────────────────────────── */
+.config-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.75);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.config-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.config-card {
+  position: relative;
+  display: flex;
+  max-width: 680px;
+  width: 100%;
+  background: var(--surface-strong);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+  transform: scale(0.94) translateY(14px);
+  transition: transform 0.35s var(--ease-out);
+  max-height: 90vh;
+}
+
+.config-modal.active .config-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Left preview panel */
+.config-preview-panel {
+  width: 190px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--line);
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: rgba(5, 5, 5, 0.5);
+}
+
+.config-bag-mock {
+  flex-shrink: 0;
+}
+
+.config-bag-surface {
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  height: 110px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.config-bag-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.04), transparent 60%);
+  pointer-events: none;
+}
+
+.config-mag-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.config-mag-dots span {
+  width: 7px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+
+.config-summary {
+  display: grid;
+  gap: 9px;
+  flex: 1;
+}
+
+.config-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.config-summary-row span {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.config-summary-row strong {
+  font-size: 0.76rem;
+  color: var(--text);
+  text-align: right;
+}
+
+.config-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  margin-top: 2px;
+  gap: 6px;
+}
+
+.config-total-row span {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.config-total-row strong {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Right options panel */
+.config-options-panel {
+  flex: 1;
+  padding: 28px 24px 24px;
+  overflow-y: auto;
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.config-opt-section {
+  display: grid;
+  gap: 10px;
+}
+
+.config-opt-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Shell colour swatches */
+.config-swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.config-swatch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.config-swatch.active {
+  border-color: rgba(255, 255, 255, 0.55);
+  color: var(--text);
+}
+
+.config-swatch.is-soon {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.swatch-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+/* Finish pills */
+.config-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.config-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.config-pill.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.config-pill.is-soon {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Dock radio cards */
+.config-dock-opts {
+  display: grid;
+  gap: 8px;
+}
+
+.config-dock-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.config-dock-opt:has(input:checked) {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.config-dock-opt input[type="radio"] {
+  accent-color: var(--text);
+  flex-shrink: 0;
+}
+
+.dock-opt-info {
+  flex: 1;
+}
+
+.dock-opt-info strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.dock-opt-info span {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.dock-opt-price {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Add-on module checkboxes */
+.config-addons {
+  display: grid;
+  gap: 8px;
+}
+
+.config-addon-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.config-addon-opt:has(input:checked) {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.config-addon-opt input[type="checkbox"] {
+  accent-color: var(--text);
+  flex-shrink: 0;
+}
+
+.config-addon-opt.is-disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.addon-opt-info {
+  flex: 1;
+}
+
+.addon-opt-info strong {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.addon-opt-info span {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.addon-opt-price {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Coming-soon tag */
+.soon-tag {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.config-build-btn {
+  width: 100%;
+}
+
+/* Config-applied row in form */
+.config-applied {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--line);
+}
+
+.config-applied-text {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+/* Mobile: stack panels vertically */
+@media (max-width: 600px) {
+  .config-card {
+    flex-direction: column;
+    max-height: 95vh;
+  }
+
+  .config-preview-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+  }
+
+  .config-bag-mock {
+    flex-shrink: 0;
+    width: 72px;
+  }
+
+  .config-bag-surface {
+    height: 54px;
+    border-radius: 8px;
+  }
+
+  .config-bag-surface .bag-brand {
+    font-size: 0.44rem;
+  }
+
+  .config-bag-surface .bag-zipper {
+    top: 14px;
+    left: 8px;
+    right: 8px;
+  }
+
+  .config-mag-dots {
+    bottom: 6px;
+  }
+
+  .config-mag-dots span {
+    width: 5px;
+    height: 5px;
+  }
+
+  .config-summary {
+    flex: 1;
+    gap: 6px;
+  }
+
+  .config-options-panel {
+    padding: 20px 18px 18px;
+    max-height: none;
+  }
+}
+
 @media (max-width: 520px) {
   .customise-card {
     padding: 28px 20px 24px;

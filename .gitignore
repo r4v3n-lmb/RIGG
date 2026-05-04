@@ -1,0 +1,20 @@
+# Design reference files
+*.pdf
+
+# Environment / secrets
+.env
+.env.local
+*.env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Node
+node_modules/
+functions/node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

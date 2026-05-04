@@ -7,8 +7,20 @@ const counterTotals = Array.from(document.querySelectorAll(".counter-total"));
 const CURRENCY = "ZAR";
 const FULL_PRICE = 499.99;
 const MEMBER_PRICE = 449.99;
+const DOCK_UPGRADE_PRICE = 50;
+const BOTTLE_ADDON_PRICE = 120;
 let isMember = false;
 let personalization = null;
+let configuration = { shell: "black", finish: "matte", dock: 2, addons: [] };
+
+const getConfigExtras = () => {
+  let extras = 0;
+  if (configuration.dock === 3) extras += DOCK_UPGRADE_PRICE;
+  if (configuration.addons.includes("bottle")) extras += BOTTLE_ADDON_PRICE;
+  return extras;
+};
+
+const getCurrentPrice = () => (isMember ? MEMBER_PRICE : FULL_PRICE) + getConfigExtras();
 const launchDateAttr = document.body?.dataset?.launch;
 const LAUNCH_TARGET = new Date(launchDateAttr || "2026-04-30T23:59:00+02:00");
 let revealsInitialized = false;
@@ -59,12 +71,13 @@ const formatZar = (amount) =>
   new Intl.NumberFormat("en-ZA", { style: "currency", currency: "ZAR" }).format(amount);
 
 const updatePrice = () => {
+  const extras = getConfigExtras();
   if (fullPriceDisplay) {
-    fullPriceDisplay.textContent = formatZar(isMember ? MEMBER_PRICE : FULL_PRICE);
+    fullPriceDisplay.textContent = formatZar(getCurrentPrice());
   }
   if (originalPriceDisplay) {
     if (isMember) {
-      originalPriceDisplay.textContent = formatZar(FULL_PRICE);
+      originalPriceDisplay.textContent = formatZar(FULL_PRICE + extras);
       originalPriceDisplay.style.display = "";
     } else {
       originalPriceDisplay.style.display = "none";
@@ -233,6 +246,134 @@ const initCustomiseModal = (() => {
   };
 })();
 
+const updateConfigDisplay = () => {
+  const applied = document.getElementById("config-applied");
+  const appliedText = document.getElementById("config-applied-text");
+  const trigger = document.getElementById("config-trigger");
+  const extras = getConfigExtras();
+  const hasExtras = configuration.dock === 3 || configuration.addons.length > 0;
+
+  if (hasExtras) {
+    const parts = [];
+    if (configuration.dock === 3) parts.push("3-magnet dock");
+    if (configuration.addons.includes("bottle")) parts.push("RIGG Bottle");
+    if (extras > 0) parts.push(`+${formatZar(extras)}`);
+    if (appliedText) appliedText.textContent = parts.join(" · ");
+    if (applied) applied.style.display = "flex";
+    if (trigger) trigger.style.display = "none";
+  } else {
+    if (applied) applied.style.display = "none";
+    if (trigger) trigger.style.display = "";
+  }
+};
+
+const initConfigModal = (() => {
+  let initialized = false;
+  return () => {
+    if (initialized) return;
+    initialized = true;
+    const modal = document.getElementById("config-modal");
+    if (!modal) return;
+
+    const openModal = () => {
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    };
+    const closeModal = () => {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+    };
+
+    const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+    const updateModalSummary = () => {
+      const shellEl = document.getElementById("cfg-sum-shell");
+      const finishEl = document.getElementById("cfg-sum-finish");
+      const dockEl = document.getElementById("cfg-sum-dock");
+      const addonsRow = document.getElementById("cfg-sum-addons-row");
+      const addonsEl = document.getElementById("cfg-sum-addons");
+      const totalEl = document.getElementById("cfg-total");
+      const thirdDot = document.querySelector(".third-mag");
+
+      if (shellEl) shellEl.textContent = cap(configuration.shell);
+      if (finishEl) finishEl.textContent = cap(configuration.finish);
+      if (dockEl) dockEl.textContent = `${configuration.dock} Magnets`;
+
+      if (configuration.addons.length > 0) {
+        if (addonsRow) addonsRow.style.display = "";
+        if (addonsEl) addonsEl.textContent = configuration.addons
+          .map((a) => (a === "bottle" ? "Bottle" : a))
+          .join(", ");
+      } else {
+        if (addonsRow) addonsRow.style.display = "none";
+      }
+
+      if (thirdDot) thirdDot.style.display = configuration.dock === 3 ? "" : "none";
+      if (totalEl) totalEl.textContent = formatZar(getCurrentPrice());
+    };
+
+    // Shell selector
+    modal.querySelectorAll("#cfg-shell .config-swatch:not([disabled])").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        modal.querySelectorAll("#cfg-shell .config-swatch").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        configuration.shell = btn.dataset.value;
+        updateModalSummary();
+      });
+    });
+
+    // Finish selector
+    modal.querySelectorAll("#cfg-finish .config-pill:not([disabled])").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        modal.querySelectorAll("#cfg-finish .config-pill").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        configuration.finish = btn.dataset.value;
+        updateModalSummary();
+      });
+    });
+
+    // Dock radios
+    modal.querySelectorAll('input[name="dock-radio"]').forEach((radio) => {
+      radio.addEventListener("change", () => {
+        configuration.dock = Number(radio.value);
+        updateModalSummary();
+      });
+    });
+
+    // Bottle add-on
+    const bottleCheck = document.getElementById("cfg-bottle-check");
+    if (bottleCheck) {
+      bottleCheck.addEventListener("change", () => {
+        if (bottleCheck.checked) {
+          if (!configuration.addons.includes("bottle")) configuration.addons.push("bottle");
+        } else {
+          configuration.addons = configuration.addons.filter((a) => a !== "bottle");
+        }
+        updateModalSummary();
+      });
+    }
+
+    // Set price labels from constants
+    const dockPriceEl = document.getElementById("dock-3-price");
+    if (dockPriceEl) dockPriceEl.textContent = `+${formatZar(DOCK_UPGRADE_PRICE)}`;
+    const bottlePriceEl = document.getElementById("bottle-addon-price");
+    if (bottlePriceEl) bottlePriceEl.textContent = `+${formatZar(BOTTLE_ADDON_PRICE)}`;
+
+    document.getElementById("config-trigger")?.addEventListener("click", openModal);
+    document.getElementById("config-edit")?.addEventListener("click", openModal);
+    document.getElementById("config-close")?.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+    document.getElementById("config-build")?.addEventListener("click", () => {
+      updateConfigDisplay();
+      updatePrice();
+      closeModal();
+    });
+
+    updateModalSummary();
+  };
+})();
+
 const initMemberModal = () => {
   const modal = document.getElementById("member-modal");
   if (!modal) return;
@@ -290,6 +431,7 @@ const initPricing = () => {
   }
   initMemberModal();
   initCustomiseModal();
+  initConfigModal();
 };
 
 const setupScrollReveals = () => {
@@ -412,17 +554,20 @@ if (form) {
 
       const docRef = await db.collection("preorders").add({
         ...data,
+        configuration: { ...configuration },
         created_at: new Date().toISOString(),
       });
 
       const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
       yoco.showPopup({
-        amountInCents: Math.round((isMember ? MEMBER_PRICE : FULL_PRICE) * 100),
+        amountInCents: Math.round(getCurrentPrice() * 100),
         currency: CURRENCY,
         name: "RIGG Core",
         description: [
           isMember ? "Member price" : null,
           personalization ? `Personalised: ${personalization.text}` : null,
+          configuration.dock === 3 ? "3-magnet dock" : null,
+          configuration.addons.includes("bottle") ? "+RIGG Bottle" : null,
           "RIGG Core",
         ].filter(Boolean).join(" · "),
         callback: async (result) => {
@@ -445,6 +590,8 @@ if (form) {
               email: data.email,
               docId: docRef.id,
               isMember,
+              dockUpgrade: configuration.dock === 3,
+              bottleAddon: configuration.addons.includes("bottle"),
             }),
           });
 
