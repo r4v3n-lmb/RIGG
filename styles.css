@@ -2942,3 +2942,165 @@ footer {
   .bag-preview[data-type="number"] .bag-text  { font-size: 3rem; }
   .bag-preview[data-type="motto"] .bag-text   { font-size: 0.95rem; }
 }
+
+/* ── Region selector ────────────────────────────────────────── */
+.region-selector-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.region-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.region-pill:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: var(--text);
+}
+
+.region-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 5px;
+  min-width: 210px;
+  display: none;
+  z-index: 300;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+}
+
+.region-dropdown.active {
+  display: block;
+}
+
+.region-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: var(--text);
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.region-option:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.region-option.active {
+  background: rgba(255,255,255,0.04);
+}
+
+.region-option-label {
+  flex: 1;
+}
+
+.region-option-currency {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* ── Stripe modal ───────────────────────────────────────────── */
+.stripe-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.75);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+}
+
+.stripe-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.stripe-card {
+  position: relative;
+  background: var(--surface-strong);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 24px;
+  padding: 40px 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+  transform: scale(0.94) translateY(14px);
+  transition: transform 0.35s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stripe-modal.active .stripe-card {
+  transform: scale(1) translateY(0);
+}
+
+.stripe-order-total {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.stripe-order-total strong {
+  color: var(--text);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.3rem;
+}
+
+#stripe-card-element {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 12px;
+  transition: border-color 0.2s ease;
+}
+
+#stripe-card-element:focus-within {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.stripe-pay-btn {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.stripe-powered {
+  text-align: center;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 520px) {
+  .stripe-card {
+    padding: 28px 20px 24px;
+  }
+}
