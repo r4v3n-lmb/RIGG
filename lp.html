@@ -23,27 +23,10 @@
         position: fixed;
         inset: 0;
         display: flex;
-        background:
-          url("assets/20260319_0815_Active Lifestyle Collage_remix_01km2bqny4fc684tpsj5km2322.webp")
-          50% 35% / cover no-repeat;
+        background: var(--bg);
       }
 
-      /* Gradient: fades right → dark for the card */
-      .lp-stage::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          100deg,
-          rgba(5,5,5,0.18) 0%,
-          rgba(5,5,5,0.55) 45%,
-          rgba(5,5,5,0.96) 68%,
-          rgba(5,5,5,0.99) 100%
-        );
-        pointer-events: none;
-      }
-
-      /* ── Left: breathing room + logo ───────────────────────── */
+      /* ── Left: image spans only this panel ─────────────────── */
       .lp-scene {
         flex: 1;
         position: relative;
@@ -52,6 +35,21 @@
         flex-direction: column;
         justify-content: space-between;
         padding: 32px 36px 36px;
+        background:
+          url("assets/20260319_0815_Active Lifestyle Collage_remix_01km2bqny4fc684tpsj5km2322.webp")
+          50% 35% / cover no-repeat;
+        overflow: hidden;
+      }
+
+      /* Gradient: darkens top + right edge where it meets the card */
+      .lp-scene::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(to bottom, rgba(5,5,5,0.35) 0%, transparent 30%),
+          linear-gradient(to right, transparent 50%, rgba(5,5,5,0.92) 100%);
+        pointer-events: none;
       }
 
       .lp-logo {
@@ -298,17 +296,6 @@
 
         .lp-stage {
           flex-direction: column;
-          background-position: 50% 20%;
-        }
-
-        .lp-stage::before {
-          background: linear-gradient(
-            180deg,
-            rgba(5,5,5,0.1)  0%,
-            rgba(5,5,5,0.55) 42%,
-            rgba(5,5,5,0.97) 62%,
-            rgba(5,5,5,0.99) 100%
-          );
         }
 
         .lp-scene {
@@ -318,6 +305,13 @@
           flex-direction: row;
           align-items: flex-start;
           justify-content: flex-start;
+          background-position: 50% 20%;
+        }
+
+        .lp-scene::before {
+          background:
+            linear-gradient(to bottom, rgba(5,5,5,0.2) 0%, transparent 30%),
+            linear-gradient(to bottom, transparent 55%, rgba(5,5,5,0.97) 100%);
         }
 
         .lp-scene-foot { display: none; }
