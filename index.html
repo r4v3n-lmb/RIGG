@@ -25,11 +25,8 @@
   <body data-launch="2026-04-30T23:59:00+02:00">
     <div class="announcement" role="status">
       <span class="announcement-tag">Now Live</span>
-      <span class="announcement-copy">
-        Only <span class="counter-value">27</span> remaining · Ships in 7–14 days
-      </span>
-      <span class="counter-live">Live count</span>
-      <a class="announcement-link" href="#preorder">Reserve Now</a>
+      <span class="announcement-copy">First production run · Ships within 7–14 days</span>
+      <a class="announcement-link" href="#preorder">Order Now</a>
     </div>
 
     <header class="site-header">
@@ -301,8 +298,7 @@
             <button class="member-trigger" id="member-trigger" type="button">Join RIGG Members and save 10%</button>
           </p>
           <div class="urgency-strip">
-            <span class="urgency-dot" aria-hidden="true"></span>
-            <strong><span class="counter-value">27</span> units remaining</strong> from the first production run
+            First production run · No restock confirmed · Ships 7–14 days
           </div>
         </div>
         <form class="form" id="preorder-form">
@@ -340,8 +336,8 @@
                 </svg>
               </span>
               <div class="personalise-label-group">
-                <strong>Personalise &amp; Configure</strong>
-                <span>Name · Dock upgrade · Add-on modules · Free</span>
+                <strong>Personalise your RIGG</strong>
+                <span>Name · Number · Motto · Free</span>
               </div>
               <span class="personalise-cta">Setup +</span>
             </button>
@@ -568,57 +564,23 @@
       <div class="build-card">
         <button class="modal-close" id="build-close" aria-label="Close">&times;</button>
 
-        <!-- Left: live preview + summary -->
+        <!-- Left: live bag preview -->
         <div class="config-preview-panel">
           <div class="build-bag-preview" id="build-bag-preview" data-type="name">
             <div class="config-bag-surface">
               <div class="bag-zipper" aria-hidden="true"></div>
               <div class="bag-text build-bag-text" id="build-preview-text" style="opacity:0.18">SMITH</div>
-              <div class="config-mag-dots" id="config-mag-dots" aria-hidden="true">
-                <span></span><span></span><span class="third-mag" style="display:none"></span>
-              </div>
+              <div class="config-mag-dots" aria-hidden="true"><span></span><span></span></div>
               <div class="bag-brand" aria-hidden="true">RIGG</div>
-            </div>
-          </div>
-          <div class="config-summary">
-            <div class="config-summary-row" id="cfg-sum-personalise-row" style="display:none">
-              <span>Name</span>
-              <strong id="cfg-sum-personalise"></strong>
-            </div>
-            <div class="config-summary-row">
-              <span>Shell</span>
-              <strong id="cfg-sum-shell">Black</strong>
-            </div>
-            <div class="config-summary-row">
-              <span>Finish</span>
-              <strong id="cfg-sum-finish">Matte</strong>
-            </div>
-            <div class="config-summary-row">
-              <span>Dock</span>
-              <strong id="cfg-sum-dock">2 Magnets</strong>
-            </div>
-            <div class="config-summary-row" id="cfg-sum-addons-row" style="display:none">
-              <span>Add-ons</span>
-              <strong id="cfg-sum-addons"></strong>
-            </div>
-            <div class="config-total-row">
-              <span>Total</span>
-              <strong id="cfg-total">R499.99</strong>
             </div>
           </div>
         </div>
 
-        <!-- Right: tabbed options -->
+        <!-- Right: personalise -->
         <div class="config-options-panel">
-          <p class="modal-eyebrow">Your RIGG</p>
+          <p class="modal-eyebrow">Free personalisation</p>
           <h2 class="modal-title" id="build-title">Make it yours</h2>
 
-          <div class="build-top-tabs">
-            <button class="build-top-tab active" data-panel="personalise" type="button">Personalise</button>
-            <button class="build-top-tab" data-panel="configure" type="button">Configure</button>
-          </div>
-
-          <!-- Personalise panel -->
           <div class="build-panel" id="build-panel-personalise">
             <div class="type-tabs" id="type-tabs">
               <button class="type-tab active" data-type="name" type="button">Name</button>
@@ -630,65 +592,6 @@
               <span class="char-counter" aria-live="polite"><span id="char-count">0</span> / <span id="char-max">10</span></span>
             </div>
             <p class="customise-hint" id="build-hint">Your name or nickname</p>
-          </div>
-
-          <!-- Configure panel -->
-          <div class="build-panel" id="build-panel-configure" style="display:none">
-            <div class="config-opt-section">
-              <p class="config-opt-label">Shell Colour</p>
-              <div class="config-swatches" id="cfg-shell">
-                <button class="config-swatch active" data-value="black" type="button">
-                  <span class="swatch-dot" style="background:#111;border-color:#444"></span>Black
-                </button>
-                <button class="config-swatch is-soon" data-value="grey" type="button" disabled>
-                  <span class="swatch-dot" style="background:#555;border-color:#777"></span>Grey<span class="soon-tag">Soon</span>
-                </button>
-                <button class="config-swatch is-soon" data-value="white" type="button" disabled>
-                  <span class="swatch-dot" style="background:#eee;border-color:#ccc"></span>White<span class="soon-tag">Soon</span>
-                </button>
-              </div>
-            </div>
-            <div class="config-opt-section">
-              <p class="config-opt-label">Finish</p>
-              <div class="config-pills" id="cfg-finish">
-                <button class="config-pill active" data-value="matte" type="button">Matte</button>
-                <button class="config-pill is-soon" data-value="satin" type="button" disabled>Satin <span class="soon-tag">Soon</span></button>
-                <button class="config-pill is-soon" data-value="tactile" type="button" disabled>Tactile <span class="soon-tag">Soon</span></button>
-              </div>
-            </div>
-            <div class="config-opt-section">
-              <p class="config-opt-label">Magnetic Dock</p>
-              <div class="config-dock-opts">
-                <label class="config-dock-opt">
-                  <input type="radio" name="dock-radio" value="2" checked />
-                  <div class="dock-opt-info"><strong>2 Magnets</strong><span>Standard hold — included</span></div>
-                  <span class="dock-opt-price">—</span>
-                </label>
-                <label class="config-dock-opt">
-                  <input type="radio" name="dock-radio" value="3" />
-                  <div class="dock-opt-info"><strong>3 Magnets</strong><span>Stronger grip on smooth racks</span></div>
-                  <span class="dock-opt-price" id="dock-3-price">+R50</span>
-                </label>
-              </div>
-            </div>
-            <div class="config-opt-section">
-              <p class="config-opt-label">Add-on Modules</p>
-              <div class="config-addons">
-                <label class="config-addon-opt">
-                  <input type="checkbox" value="bottle" id="cfg-bottle-check" />
-                  <div class="addon-opt-info"><strong>RIGG Bottle</strong><span>Pre-order — ships with your Core</span></div>
-                  <span class="addon-opt-price" id="bottle-addon-price">+R120</span>
-                </label>
-                <div class="config-addon-opt is-disabled">
-                  <div class="addon-opt-info"><strong>Towel Clip</strong><span>Coming soon</span></div>
-                  <span class="soon-tag">Soon</span>
-                </div>
-                <div class="config-addon-opt is-disabled">
-                  <div class="addon-opt-info"><strong>Lifting Grips Holder</strong><span>Coming soon</span></div>
-                  <span class="soon-tag">Soon</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="build-actions">

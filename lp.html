@@ -381,10 +381,7 @@
             <span class="lp-price-strike" id="original-price"></span>
             <span class="lp-member-badge" id="member-badge">Member price</span>
           </div>
-          <div class="lp-urgency" style="margin-top:8px">
-            <span class="lp-urgency-dot" aria-hidden="true"></span>
-            <span><strong><span class="counter-value">27</span> units</strong> left from the first run</span>
-          </div>
+          <p class="lp-batch-note" style="margin-top:6px;font-size:0.78rem;color:var(--muted);">First production run · No restock confirmed</p>
         </div>
 
         <div class="lp-rule"></div>
@@ -417,8 +414,8 @@
                 </svg>
               </span>
               <div class="personalise-label-group">
-                <strong>Personalise &amp; Configure</strong>
-                <span>Name · Dock upgrade · Add-ons · Free</span>
+                <strong>Personalise your RIGG</strong>
+                <span>Name · Number · Motto · Free</span>
               </div>
               <span class="personalise-cta">Setup +</span>
             </button>
@@ -466,7 +463,7 @@
       </div>
     </div>
 
-    <!-- ── Build / configure modal ──────────────────────────── -->
+    <!-- ── Personalise modal ────────────────────────────────── -->
     <div class="build-modal" id="build-modal" role="dialog" aria-modal="true" aria-labelledby="build-title">
       <div class="build-card">
         <button class="modal-close" id="build-close" aria-label="Close">&times;</button>
@@ -476,48 +473,15 @@
             <div class="config-bag-surface">
               <div class="bag-zipper" aria-hidden="true"></div>
               <div class="bag-text build-bag-text" id="build-preview-text" style="opacity:0.18">SMITH</div>
-              <div class="config-mag-dots" id="config-mag-dots" aria-hidden="true">
-                <span></span><span></span><span class="third-mag" style="display:none"></span>
-              </div>
+              <div class="config-mag-dots" aria-hidden="true"><span></span><span></span></div>
               <div class="bag-brand" aria-hidden="true">RIGG</div>
-            </div>
-          </div>
-          <div class="config-summary">
-            <div class="config-summary-row" id="cfg-sum-personalise-row" style="display:none">
-              <span>Name</span>
-              <strong id="cfg-sum-personalise"></strong>
-            </div>
-            <div class="config-summary-row">
-              <span>Shell</span>
-              <strong id="cfg-sum-shell">Black</strong>
-            </div>
-            <div class="config-summary-row">
-              <span>Finish</span>
-              <strong id="cfg-sum-finish">Matte</strong>
-            </div>
-            <div class="config-summary-row">
-              <span>Dock</span>
-              <strong id="cfg-sum-dock">2 Magnets</strong>
-            </div>
-            <div class="config-summary-row" id="cfg-sum-addons-row" style="display:none">
-              <span>Add-ons</span>
-              <strong id="cfg-sum-addons"></strong>
-            </div>
-            <div class="config-total-row">
-              <span>Total</span>
-              <strong id="cfg-total">R499.99</strong>
             </div>
           </div>
         </div>
 
         <div class="config-options-panel">
-          <p class="modal-eyebrow">Your RIGG</p>
+          <p class="modal-eyebrow">Free personalisation</p>
           <h2 class="modal-title" id="build-title">Make it yours</h2>
-
-          <div class="build-top-tabs">
-            <button class="build-top-tab active" data-panel="personalise" type="button">Personalise</button>
-            <button class="build-top-tab" data-panel="configure" type="button">Configure</button>
-          </div>
 
           <div class="build-panel" id="build-panel-personalise">
             <div class="type-tabs" id="type-tabs">
@@ -530,64 +494,6 @@
               <span class="char-counter" aria-live="polite"><span id="char-count">0</span> / <span id="char-max">10</span></span>
             </div>
             <p class="customise-hint" id="build-hint">Your name or nickname</p>
-          </div>
-
-          <div class="build-panel" id="build-panel-configure" style="display:none">
-            <div class="config-opt-section">
-              <p class="config-opt-label">Shell Colour</p>
-              <div class="config-swatches" id="cfg-shell">
-                <button class="config-swatch active" data-value="black" type="button">
-                  <span class="swatch-dot" style="background:#111;border-color:#444"></span>Black
-                </button>
-                <button class="config-swatch is-soon" data-value="grey" type="button" disabled>
-                  <span class="swatch-dot" style="background:#555;border-color:#777"></span>Grey<span class="soon-tag">Soon</span>
-                </button>
-                <button class="config-swatch is-soon" data-value="white" type="button" disabled>
-                  <span class="swatch-dot" style="background:#eee;border-color:#ccc"></span>White<span class="soon-tag">Soon</span>
-                </button>
-              </div>
-            </div>
-            <div class="config-opt-section">
-              <p class="config-opt-label">Finish</p>
-              <div class="config-pills" id="cfg-finish">
-                <button class="config-pill active" data-value="matte" type="button">Matte</button>
-                <button class="config-pill is-soon" data-value="satin" type="button" disabled>Satin <span class="soon-tag">Soon</span></button>
-                <button class="config-pill is-soon" data-value="tactile" type="button" disabled>Tactile <span class="soon-tag">Soon</span></button>
-              </div>
-            </div>
-            <div class="config-opt-section">
-              <p class="config-opt-label">Magnetic Dock</p>
-              <div class="config-dock-opts">
-                <label class="config-dock-opt">
-                  <input type="radio" name="dock-radio" value="2" checked />
-                  <div class="dock-opt-info"><strong>2 Magnets</strong><span>Standard hold — included</span></div>
-                  <span class="dock-opt-price">—</span>
-                </label>
-                <label class="config-dock-opt">
-                  <input type="radio" name="dock-radio" value="3" />
-                  <div class="dock-opt-info"><strong>3 Magnets</strong><span>Stronger grip on smooth racks</span></div>
-                  <span class="dock-opt-price" id="dock-3-price">+R50</span>
-                </label>
-              </div>
-            </div>
-            <div class="config-opt-section">
-              <p class="config-opt-label">Add-on Modules</p>
-              <div class="config-addons">
-                <label class="config-addon-opt">
-                  <input type="checkbox" value="bottle" id="cfg-bottle-check" />
-                  <div class="addon-opt-info"><strong>RIGG Bottle</strong><span>Pre-order — ships with your Core</span></div>
-                  <span class="addon-opt-price" id="bottle-addon-price">+R120</span>
-                </label>
-                <div class="config-addon-opt is-disabled">
-                  <div class="addon-opt-info"><strong>Towel Clip</strong><span>Coming soon</span></div>
-                  <span class="soon-tag">Soon</span>
-                </div>
-                <div class="config-addon-opt is-disabled">
-                  <div class="addon-opt-info"><strong>Lifting Grips Holder</strong><span>Coming soon</span></div>
-                  <span class="soon-tag">Soon</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="build-actions">

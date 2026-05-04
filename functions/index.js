@@ -6,8 +6,6 @@ admin.initializeApp();
 
 const FULL_PRICE_CENTS = 49999;    // R499.99
 const MEMBER_PRICE_CENTS = 44999;  // R449.99
-const DOCK_UPGRADE_CENTS = 5000;   // R50
-const BOTTLE_ADDON_CENTS = 12000;  // R120
 
 exports.chargeYoco = functions.https.onRequest(async (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
@@ -25,7 +23,7 @@ exports.chargeYoco = functions.https.onRequest(async (req, res) => {
   }
 
   try {
-    const { token, email, docId, isMember, dockUpgrade, bottleAddon } = req.body || {};
+    const { token, email, docId, isMember } = req.body || {};
     if (!token || !docId) {
       res.status(400).json({ error: "Token and docId required" });
       return;
@@ -38,8 +36,6 @@ exports.chargeYoco = functions.https.onRequest(async (req, res) => {
         amountInCents = MEMBER_PRICE_CENTS;
       }
     }
-    if (dockUpgrade) amountInCents += DOCK_UPGRADE_CENTS;
-    if (bottleAddon) amountInCents += BOTTLE_ADDON_CENTS;
 
     const chargeResponse = await fetch("https://online.yoco.com/v1/charges/", {
       method: "POST",
@@ -72,9 +68,7 @@ exports.chargeYoco = functions.https.onRequest(async (req, res) => {
         paid: true,
         payment_reference: charge.id,
         amount_charged: amountInCents,
-        is_member: isMember && amountInCents >= MEMBER_PRICE_CENTS,
-        dock_upgrade: !!dockUpgrade,
-        bottle_addon: !!bottleAddon,
+        is_member: amountInCents === MEMBER_PRICE_CENTS,
         paid_at: admin.firestore.FieldValue.serverTimestamp(),
         email: email ?? null,
       },
