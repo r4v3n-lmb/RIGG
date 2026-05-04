@@ -696,11 +696,24 @@ video {
   display: grid;
   gap: 40px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  align-items: center;
+  align-items: start;
 }
 
-.preorder h2 {
-  font-size: clamp(2.2rem, 2vw + 1rem, 3rem);
+.preorder-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.preorder-copy h2 {
+  font-size: clamp(2.6rem, 2.4vw + 1rem, 3.6rem);
+  margin-bottom: 0;
+  line-height: 1;
+  letter-spacing: 0.2em;
+}
+
+.preorder-copy .lead {
+  margin-top: -12px;
 }
 
 .savings {
@@ -712,30 +725,59 @@ video {
 .founder-benefits {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  font-size: 0.85rem;
+  gap: 8px;
+  font-size: 0.82rem;
   color: var(--muted);
 }
 
 .founder-benefits span {
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(10, 10, 10, 0.7);
 }
 
+.founder-benefits span::before {
+  content: "✓";
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+}
+
 .founder-pricing {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 14px;
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(12, 12, 12, 0.8);
+  overflow: hidden;
 }
 
 .founder-pricing div {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 16px;
-  background: rgba(12, 12, 12, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.founder-pricing div + div {
+  border-top: 1px solid var(--line);
+}
+
+#full-price {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 .label {
@@ -1766,7 +1808,7 @@ footer {
 }
 
 .dispatch-note {
-  margin-top: 16px;
+  margin-top: 0;
   color: var(--muted);
   font-size: 0.9rem;
   display: flex;
@@ -1922,7 +1964,11 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.05);
   font-size: 0.88rem;
   color: var(--muted);
 }
