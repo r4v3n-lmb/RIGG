@@ -2246,7 +2246,123 @@ footer {
   width: 100%;
 }
 
-/* ── Configurator modal ────────────────────────────────────────── */
+/* ── Unified build modal (personalise + configure) ─────────────── */
+.build-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.75);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-out);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.build-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.build-card {
+  position: relative;
+  display: flex;
+  max-width: 680px;
+  width: 100%;
+  background: var(--surface-strong);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+  transform: scale(0.94) translateY(14px);
+  transition: transform 0.35s var(--ease-out);
+  max-height: 90vh;
+}
+
+.build-modal.active .build-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Bag preview text sizing inside the compact left-panel preview */
+.build-bag-preview[data-type="name"]   .build-bag-text { font-size: 1.4rem; }
+.build-bag-preview[data-type="number"] .build-bag-text { font-size: 2.2rem; letter-spacing: 0.06em; }
+.build-bag-preview[data-type="motto"]  .build-bag-text { font-size: 0.7rem; letter-spacing: 0.28em; }
+
+/* Top-level tabs: Personalise / Configure */
+.build-top-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.build-top-tab {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.build-top-tab.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+/* Tab content panels */
+.build-panel {
+  display: grid;
+  gap: 16px;
+}
+
+/* Actions at bottom of right panel */
+.build-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.build-actions .button {
+  width: 100%;
+}
+
+/* Applied state in form trigger */
+.build-applied {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--line);
+}
+
+.build-applied-text {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+/* Mobile: stack panels */
+@media (max-width: 600px) {
+  .build-card {
+    flex-direction: column;
+    max-height: 95vh;
+  }
+}
+
+/* ── Configurator (old standalone, now unused — kept for CSS class reuse) ── */
 .config-modal {
   position: fixed;
   inset: 0;

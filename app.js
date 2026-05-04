@@ -139,125 +139,19 @@ const PERSONALISE_TYPES = {
   motto:  { max: 15, placeholder: "ZERO QUIT", hint: "A short word or phrase (max 15 chars)" },
 };
 
-const updatePersonaliseSection = () => {
-  const applied = document.getElementById("personalise-applied");
-  const appliedText = document.getElementById("personalise-applied-text");
-  const trigger = document.getElementById("personalise-trigger");
-  if (personalization) {
-    if (appliedText) appliedText.textContent = `"${personalization.text}"`;
-    if (applied) applied.style.display = "flex";
-    if (trigger) trigger.style.display = "none";
-  } else {
-    if (applied) applied.style.display = "none";
-    if (trigger) trigger.style.display = "";
-  }
-};
+const updateBuildSection = () => {
+  const applied = document.getElementById("build-applied");
+  const appliedText = document.getElementById("build-applied-text");
+  const trigger = document.getElementById("build-trigger");
 
-const initCustomiseModal = (() => {
-  let initialized = false;
-  return () => {
-    if (initialized) return;
-    initialized = true;
-    const modal = document.getElementById("customise-modal");
-    if (!modal) return;
-
-    const input = document.getElementById("customise-input");
-    const previewText = document.getElementById("bag-preview-text");
-    const charCount = document.getElementById("char-count");
-    const charMax = document.getElementById("char-max");
-    const hint = document.getElementById("customise-hint");
-    const bagPreview = document.getElementById("bag-preview");
-    let activeType = "name";
-
-    const openModal = () => {
-      modal.classList.add("active");
-      document.body.style.overflow = "hidden";
-      setTimeout(() => input?.focus(), 100);
-    };
-
-    const closeModal = () => {
-      modal.classList.remove("active");
-      document.body.style.overflow = "";
-    };
-
-    const updatePreview = () => {
-      const raw = input?.value || "";
-      const upper = raw.toUpperCase();
-      const config = PERSONALISE_TYPES[activeType];
-      if (previewText) {
-        previewText.textContent = upper || config.placeholder;
-        previewText.style.opacity = upper ? "1" : "0.18";
-      }
-      if (charCount) charCount.textContent = raw.length;
-    };
-
-    const setType = (type) => {
-      activeType = type;
-      const config = PERSONALISE_TYPES[type];
-      if (input) {
-        input.maxLength = config.max;
-        input.placeholder = config.placeholder;
-        input.value = personalization?.type === type ? personalization.text : "";
-      }
-      if (charMax) charMax.textContent = config.max;
-      if (hint) hint.textContent = config.hint;
-      if (bagPreview) bagPreview.dataset.type = type;
-      modal.querySelectorAll(".type-tab").forEach(tab => {
-        tab.classList.toggle("active", tab.dataset.type === type);
-      });
-      updatePreview();
-    };
-
-    modal.querySelectorAll(".type-tab").forEach(tab => {
-      tab.addEventListener("click", () => setType(tab.dataset.type));
-    });
-    input?.addEventListener("input", updatePreview);
-
-    document.getElementById("personalise-trigger")?.addEventListener("click", openModal);
-    document.getElementById("personalise-edit")?.addEventListener("click", () => {
-      if (personalization) setType(personalization.type);
-      openModal();
-    });
-    document.getElementById("personalise-remove")?.addEventListener("click", () => {
-      personalization = null;
-      updatePersonaliseSection();
-    });
-    document.getElementById("customise-close")?.addEventListener("click", closeModal);
-    document.getElementById("customise-skip")?.addEventListener("click", () => {
-      personalization = null;
-      updatePersonaliseSection();
-      closeModal();
-    });
-    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-
-    document.getElementById("customise-confirm")?.addEventListener("click", () => {
-      const text = (input?.value || "").trim().toUpperCase();
-      if (!text) {
-        if (input) { input.style.borderColor = "#f87171"; input.focus(); }
-        return;
-      }
-      if (input) input.style.borderColor = "";
-      personalization = { type: activeType, text };
-      updatePersonaliseSection();
-      closeModal();
-    });
-
-    setType("name");
-  };
-})();
-
-const updateConfigDisplay = () => {
-  const applied = document.getElementById("config-applied");
-  const appliedText = document.getElementById("config-applied-text");
-  const trigger = document.getElementById("config-trigger");
+  const parts = [];
+  if (personalization) parts.push(`"${personalization.text}"`);
+  if (configuration.dock === 3) parts.push("3-magnet dock");
+  if (configuration.addons.includes("bottle")) parts.push("RIGG Bottle");
   const extras = getConfigExtras();
-  const hasExtras = configuration.dock === 3 || configuration.addons.length > 0;
+  if (extras > 0) parts.push(`+${formatZar(extras)}`);
 
-  if (hasExtras) {
-    const parts = [];
-    if (configuration.dock === 3) parts.push("3-magnet dock");
-    if (configuration.addons.includes("bottle")) parts.push("RIGG Bottle");
-    if (extras > 0) parts.push(`+${formatZar(extras)}`);
+  if (parts.length > 0) {
     if (appliedText) appliedText.textContent = parts.join(" · ");
     if (applied) applied.style.display = "flex";
     if (trigger) trigger.style.display = "none";
@@ -267,26 +161,59 @@ const updateConfigDisplay = () => {
   }
 };
 
-const initConfigModal = (() => {
+const initBuildModal = (() => {
   let initialized = false;
   return () => {
     if (initialized) return;
     initialized = true;
-    const modal = document.getElementById("config-modal");
+    const modal = document.getElementById("build-modal");
     if (!modal) return;
 
-    const openModal = () => {
+    const input = document.getElementById("build-text-input");
+    const previewText = document.getElementById("build-preview-text");
+    const charCount = document.getElementById("char-count");
+    const charMax = document.getElementById("char-max");
+    const hint = document.getElementById("build-hint");
+    const bagPreview = document.getElementById("build-bag-preview");
+    let activeType = "name";
+
+    const openModal = (startPanel = "personalise") => {
       modal.classList.add("active");
       document.body.style.overflow = "hidden";
+      switchTopTab(startPanel);
+      if (startPanel === "personalise") setTimeout(() => input?.focus(), 100);
     };
+
     const closeModal = () => {
       modal.classList.remove("active");
       document.body.style.overflow = "";
     };
 
+    const switchTopTab = (panelName) => {
+      modal.querySelectorAll(".build-top-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.panel === panelName);
+      });
+      modal.querySelectorAll(".build-panel").forEach((panel) => {
+        panel.style.display = panel.id === `build-panel-${panelName}` ? "" : "none";
+      });
+    };
+
+    modal.querySelectorAll(".build-top-tab").forEach((tab) => {
+      tab.addEventListener("click", () => switchTopTab(tab.dataset.panel));
+    });
+
     const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
     const updateModalSummary = () => {
+      const personRow = document.getElementById("cfg-sum-personalise-row");
+      const personEl = document.getElementById("cfg-sum-personalise");
+      if (personalization) {
+        if (personRow) personRow.style.display = "";
+        if (personEl) personEl.textContent = `"${personalization.text}"`;
+      } else {
+        if (personRow) personRow.style.display = "none";
+      }
+
       const shellEl = document.getElementById("cfg-sum-shell");
       const finishEl = document.getElementById("cfg-sum-finish");
       const dockEl = document.getElementById("cfg-sum-dock");
@@ -302,8 +229,7 @@ const initConfigModal = (() => {
       if (configuration.addons.length > 0) {
         if (addonsRow) addonsRow.style.display = "";
         if (addonsEl) addonsEl.textContent = configuration.addons
-          .map((a) => (a === "bottle" ? "Bottle" : a))
-          .join(", ");
+          .map((a) => (a === "bottle" ? "Bottle" : a)).join(", ");
       } else {
         if (addonsRow) addonsRow.style.display = "none";
       }
@@ -312,7 +238,40 @@ const initConfigModal = (() => {
       if (totalEl) totalEl.textContent = formatZar(getCurrentPrice());
     };
 
-    // Shell selector
+    const updatePreview = () => {
+      const raw = input?.value || "";
+      const upper = raw.toUpperCase();
+      const cfg = PERSONALISE_TYPES[activeType];
+      if (previewText) {
+        previewText.textContent = upper || cfg.placeholder;
+        previewText.style.opacity = upper ? "1" : "0.18";
+      }
+      if (charCount) charCount.textContent = raw.length;
+    };
+
+    const setPersonaliseType = (type) => {
+      activeType = type;
+      const cfg = PERSONALISE_TYPES[type];
+      if (input) {
+        input.maxLength = cfg.max;
+        input.placeholder = cfg.placeholder;
+        input.value = personalization?.type === type ? personalization.text : "";
+      }
+      if (charMax) charMax.textContent = cfg.max;
+      if (hint) hint.textContent = cfg.hint;
+      if (bagPreview) bagPreview.dataset.type = type;
+      modal.querySelectorAll(".type-tab").forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.type === type);
+      });
+      updatePreview();
+    };
+
+    modal.querySelectorAll(".type-tab").forEach((tab) => {
+      tab.addEventListener("click", () => setPersonaliseType(tab.dataset.type));
+    });
+    input?.addEventListener("input", updatePreview);
+
+    // Config: shell
     modal.querySelectorAll("#cfg-shell .config-swatch:not([disabled])").forEach((btn) => {
       btn.addEventListener("click", () => {
         modal.querySelectorAll("#cfg-shell .config-swatch").forEach((b) => b.classList.remove("active"));
@@ -322,7 +281,7 @@ const initConfigModal = (() => {
       });
     });
 
-    // Finish selector
+    // Config: finish
     modal.querySelectorAll("#cfg-finish .config-pill:not([disabled])").forEach((btn) => {
       btn.addEventListener("click", () => {
         modal.querySelectorAll("#cfg-finish .config-pill").forEach((b) => b.classList.remove("active"));
@@ -332,7 +291,7 @@ const initConfigModal = (() => {
       });
     });
 
-    // Dock radios
+    // Config: dock
     modal.querySelectorAll('input[name="dock-radio"]').forEach((radio) => {
       radio.addEventListener("change", () => {
         configuration.dock = Number(radio.value);
@@ -340,7 +299,7 @@ const initConfigModal = (() => {
       });
     });
 
-    // Bottle add-on
+    // Config: bottle
     const bottleCheck = document.getElementById("cfg-bottle-check");
     if (bottleCheck) {
       bottleCheck.addEventListener("change", () => {
@@ -353,23 +312,52 @@ const initConfigModal = (() => {
       });
     }
 
-    // Set price labels from constants
+    // Price labels
     const dockPriceEl = document.getElementById("dock-3-price");
     if (dockPriceEl) dockPriceEl.textContent = `+${formatZar(DOCK_UPGRADE_PRICE)}`;
     const bottlePriceEl = document.getElementById("bottle-addon-price");
     if (bottlePriceEl) bottlePriceEl.textContent = `+${formatZar(BOTTLE_ADDON_PRICE)}`;
 
-    document.getElementById("config-trigger")?.addEventListener("click", openModal);
-    document.getElementById("config-edit")?.addEventListener("click", openModal);
-    document.getElementById("config-close")?.addEventListener("click", closeModal);
+    // Trigger / edit
+    document.getElementById("build-trigger")?.addEventListener("click", () => openModal("personalise"));
+    document.getElementById("build-edit")?.addEventListener("click", () => {
+      if (personalization) setPersonaliseType(personalization.type);
+      openModal("personalise");
+    });
+
+    // Clear all
+    document.getElementById("build-remove")?.addEventListener("click", () => {
+      personalization = null;
+      if (input) input.value = "";
+      configuration = { shell: "black", finish: "matte", dock: 2, addons: [] };
+      modal.querySelectorAll("#cfg-shell .config-swatch").forEach((b) => b.classList.toggle("active", b.dataset.value === "black"));
+      modal.querySelectorAll("#cfg-finish .config-pill").forEach((b) => b.classList.toggle("active", b.dataset.value === "matte"));
+      modal.querySelectorAll('input[name="dock-radio"]').forEach((r) => { r.checked = r.value === "2"; });
+      if (bottleCheck) bottleCheck.checked = false;
+      setPersonaliseType("name");
+      updateModalSummary();
+      updateBuildSection();
+      updatePrice();
+    });
+
+    // Close
+    document.getElementById("build-close")?.addEventListener("click", closeModal);
     modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
 
-    document.getElementById("config-build")?.addEventListener("click", () => {
-      updateConfigDisplay();
+    // Skip
+    document.getElementById("build-skip")?.addEventListener("click", closeModal);
+
+    // Confirm
+    document.getElementById("build-confirm")?.addEventListener("click", () => {
+      const text = (input?.value || "").trim().toUpperCase();
+      personalization = text ? { type: activeType, text } : null;
+      updateModalSummary();
+      updateBuildSection();
       updatePrice();
       closeModal();
     });
 
+    setPersonaliseType("name");
     updateModalSummary();
   };
 })();
@@ -430,8 +418,7 @@ const initPricing = () => {
     revealsInitialized = true;
   }
   initMemberModal();
-  initCustomiseModal();
-  initConfigModal();
+  initBuildModal();
 };
 
 const setupScrollReveals = () => {
