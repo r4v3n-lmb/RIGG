@@ -697,7 +697,7 @@ const populateFAQ = () => {
       label: "Shipping?",
       question: "When will my order ship?",
       answer:
-        "We dispatch within 7–14 business days of your order. You'll receive a shipping notification with tracking once your RIGG is on its way.",
+        "We dispatch within 1–2 weeks of your order. You'll receive a shipping notification with tracking once your RIGG is on its way.",
     },
     {
       label: "Delays?",
