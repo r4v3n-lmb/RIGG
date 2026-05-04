@@ -1,18 +1,14 @@
 const form = document.getElementById("preorder-form");
 const status = document.getElementById("form-status");
-const priceDisplay = document.getElementById("price-display");
 const fullPriceDisplay = document.getElementById("full-price");
-const depositPriceDisplay = document.getElementById("deposit-price");
 const originalPriceDisplay = document.getElementById("original-price");
-const fullPriceHighlights = document.querySelectorAll('[data-price="full"]');
-const originalPriceHighlights = document.querySelectorAll('[data-price="original"]');
-const depositPriceHighlights = document.querySelectorAll('[data-price="deposit"]');
 const counterValues = Array.from(document.querySelectorAll(".counter-value"));
 const counterTotals = Array.from(document.querySelectorAll(".counter-total"));
 const CURRENCY = "ZAR";
-const FULL_PRICE = 399.99;
-const ORIGINAL_PRICE = 599.99;
-const DEPOSIT = 150.0;
+const FULL_PRICE = 499.99;
+const MEMBER_PRICE = 449.99;
+let isMember = false;
+let personalization = null;
 const launchDateAttr = document.body?.dataset?.launch;
 const LAUNCH_TARGET = new Date(launchDateAttr || "2026-04-30T23:59:00+02:00");
 let revealsInitialized = false;
@@ -48,9 +44,10 @@ const FIREBASE_CONFIG = {
   appId: "1:22084213263:web:fd683d467cedd60076a17a",
   measurementId: "G-K29G7PVKYS",
 };
-const VERIFY_PAYSTACK_URL =
-  "https://us-central1-rigg-ae114.cloudfunctions.net/verifyPaystack";
-const PAYSTACK_PUBLIC_KEY = "pk_test_f049c52856829d132b67a1a02af013a3bbc1e052";
+const CHARGE_YOCO_URL =
+  "https://us-central1-rigg-ae114.cloudfunctions.net/chargeYoco";
+// Yoco Dashboard → Developers → API Keys → Public key
+const YOCO_PUBLIC_KEY = "pk_test_REPLACE_WITH_YOUR_YOCO_PUBLIC_KEY";
 
 let db = null;
 if (window.firebase && typeof window.firebase.initializeApp === "function") {
@@ -62,27 +59,21 @@ const formatZar = (amount) =>
   new Intl.NumberFormat("en-ZA", { style: "currency", currency: "ZAR" }).format(amount);
 
 const updatePrice = () => {
-  if (priceDisplay) {
-    priceDisplay.textContent = formatZar(DEPOSIT);
-  }
   if (fullPriceDisplay) {
-    fullPriceDisplay.textContent = formatZar(FULL_PRICE);
-  }
-  if (depositPriceDisplay) {
-    depositPriceDisplay.textContent = formatZar(DEPOSIT);
+    fullPriceDisplay.textContent = formatZar(isMember ? MEMBER_PRICE : FULL_PRICE);
   }
   if (originalPriceDisplay) {
-    originalPriceDisplay.textContent = formatZar(ORIGINAL_PRICE);
+    if (isMember) {
+      originalPriceDisplay.textContent = formatZar(FULL_PRICE);
+      originalPriceDisplay.style.display = "";
+    } else {
+      originalPriceDisplay.style.display = "none";
+    }
   }
-  fullPriceHighlights.forEach((el) => {
-    el.textContent = formatZar(FULL_PRICE);
-  });
-  originalPriceHighlights.forEach((el) => {
-    el.textContent = formatZar(ORIGINAL_PRICE);
-  });
-  depositPriceHighlights.forEach((el) => {
-    el.textContent = formatZar(DEPOSIT);
-  });
+  const memberTrigger = document.getElementById("member-trigger");
+  const memberBadge = document.getElementById("member-badge");
+  if (memberTrigger) memberTrigger.style.display = isMember ? "none" : "";
+  if (memberBadge) memberBadge.style.display = isMember ? "" : "none";
 };
 
 const getMaxUnits = () => {
@@ -129,8 +120,166 @@ const formatSpecs = () => {
   });
 };
 
+const PERSONALISE_TYPES = {
+  name:   { max: 10, placeholder: "SMITH",     hint: "Your name or nickname" },
+  number: { max: 3,  placeholder: "23",        hint: "Your jersey or lucky number" },
+  motto:  { max: 15, placeholder: "ZERO QUIT", hint: "A short word or phrase (max 15 chars)" },
+};
+
+const updatePersonaliseSection = () => {
+  const applied = document.getElementById("personalise-applied");
+  const appliedText = document.getElementById("personalise-applied-text");
+  const trigger = document.getElementById("personalise-trigger");
+  if (personalization) {
+    if (appliedText) appliedText.textContent = `"${personalization.text}"`;
+    if (applied) applied.style.display = "flex";
+    if (trigger) trigger.style.display = "none";
+  } else {
+    if (applied) applied.style.display = "none";
+    if (trigger) trigger.style.display = "";
+  }
+};
+
+const initCustomiseModal = (() => {
+  let initialized = false;
+  return () => {
+    if (initialized) return;
+    initialized = true;
+    const modal = document.getElementById("customise-modal");
+    if (!modal) return;
+
+    const input = document.getElementById("customise-input");
+    const previewText = document.getElementById("bag-preview-text");
+    const charCount = document.getElementById("char-count");
+    const charMax = document.getElementById("char-max");
+    const hint = document.getElementById("customise-hint");
+    const bagPreview = document.getElementById("bag-preview");
+    let activeType = "name";
+
+    const openModal = () => {
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+      setTimeout(() => input?.focus(), 100);
+    };
+
+    const closeModal = () => {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+    };
+
+    const updatePreview = () => {
+      const raw = input?.value || "";
+      const upper = raw.toUpperCase();
+      const config = PERSONALISE_TYPES[activeType];
+      if (previewText) {
+        previewText.textContent = upper || config.placeholder;
+        previewText.style.opacity = upper ? "1" : "0.18";
+      }
+      if (charCount) charCount.textContent = raw.length;
+    };
+
+    const setType = (type) => {
+      activeType = type;
+      const config = PERSONALISE_TYPES[type];
+      if (input) {
+        input.maxLength = config.max;
+        input.placeholder = config.placeholder;
+        input.value = personalization?.type === type ? personalization.text : "";
+      }
+      if (charMax) charMax.textContent = config.max;
+      if (hint) hint.textContent = config.hint;
+      if (bagPreview) bagPreview.dataset.type = type;
+      modal.querySelectorAll(".type-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.type === type);
+      });
+      updatePreview();
+    };
+
+    modal.querySelectorAll(".type-tab").forEach(tab => {
+      tab.addEventListener("click", () => setType(tab.dataset.type));
+    });
+    input?.addEventListener("input", updatePreview);
+
+    document.getElementById("personalise-trigger")?.addEventListener("click", openModal);
+    document.getElementById("personalise-edit")?.addEventListener("click", () => {
+      if (personalization) setType(personalization.type);
+      openModal();
+    });
+    document.getElementById("personalise-remove")?.addEventListener("click", () => {
+      personalization = null;
+      updatePersonaliseSection();
+    });
+    document.getElementById("customise-close")?.addEventListener("click", closeModal);
+    document.getElementById("customise-skip")?.addEventListener("click", () => {
+      personalization = null;
+      updatePersonaliseSection();
+      closeModal();
+    });
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+    document.getElementById("customise-confirm")?.addEventListener("click", () => {
+      const text = (input?.value || "").trim().toUpperCase();
+      if (!text) {
+        if (input) { input.style.borderColor = "#f87171"; input.focus(); }
+        return;
+      }
+      if (input) input.style.borderColor = "";
+      personalization = { type: activeType, text };
+      updatePersonaliseSection();
+      closeModal();
+    });
+
+    setType("name");
+  };
+})();
+
+const initMemberModal = () => {
+  const modal = document.getElementById("member-modal");
+  if (!modal) return;
+
+  const openModal = () => {
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeModal = () => {
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+    localStorage.setItem("rigg-modal-seen", "1");
+  };
+
+  document.getElementById("modal-close")?.addEventListener("click", closeModal);
+  document.getElementById("modal-skip")?.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  document.getElementById("member-trigger")?.addEventListener("click", openModal);
+
+  document.getElementById("modal-join")?.addEventListener("click", async () => {
+    const emailInput = document.getElementById("modal-email");
+    const email = emailInput?.value.trim();
+    if (!email || !email.includes("@")) {
+      if (emailInput) {
+        emailInput.classList.add("input-error");
+        emailInput.focus();
+      }
+      return;
+    }
+    emailInput?.classList.remove("input-error");
+    if (db) {
+      try {
+        await db.collection("members").doc(email).set({ email, joined_at: new Date().toISOString() });
+      } catch (_) {}
+    }
+    isMember = true;
+    updatePrice();
+    closeModal();
+  });
+
+  if (!localStorage.getItem("rigg-modal-seen")) {
+    setTimeout(openModal, 2500);
+  }
+};
+
 const initPricing = () => {
-  if (!priceDisplay) return;
   updatePrice();
   refreshCounter();
   updateCountdown();
@@ -139,6 +288,8 @@ const initPricing = () => {
     setupScrollReveals();
     revealsInitialized = true;
   }
+  initMemberModal();
+  initCustomiseModal();
 };
 
 const setupScrollReveals = () => {
@@ -230,10 +381,10 @@ if (form) {
       email: emailInput ? emailInput.value.trim() : "",
       number: numberInput ? numberInput.value.trim() : "",
       currency: CURRENCY,
-      full_price: FULL_PRICE,
-      deposit_amount: DEPOSIT,
+      price: isMember ? MEMBER_PRICE : FULL_PRICE,
+      is_member: isMember,
+      personalization: personalization ? { type: personalization.type, text: personalization.text } : null,
       paid: false,
-      payment_reference: null,
       locale: navigator.language || "en-US",
       region: (navigator.language || "en-US").split("-")[1] || "US",
     };
@@ -243,7 +394,7 @@ if (form) {
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
-      submitButton.textContent = "RESERVE";
+      submitButton.textContent = "ORDER NOW";
       }
       return;
     }
@@ -255,77 +406,74 @@ if (form) {
       if (!db) {
         throw new Error("Firestore not available.");
       }
-      if (!window.PaystackPop) {
-        throw new Error("Paystack not available.");
+      if (!window.YocoSDK) {
+        throw new Error("Yoco not available.");
       }
-
-      const reference = `RIGG-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-      data.payment_reference = reference;
-      const digits = data.number.replace(/\D/g, "");
-      const paystackEmail = data.email || `noreply.rigg+${digits || "contact"}@gmail.com`;
 
       const docRef = await db.collection("preorders").add({
         ...data,
         created_at: new Date().toISOString(),
       });
 
-      const amount = Math.round(DEPOSIT * 100);
-      const handler = PaystackPop.setup({
-        key: PAYSTACK_PUBLIC_KEY,
-        email: paystackEmail,
-        amount,
+      const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
+      yoco.showPopup({
+        amountInCents: Math.round((isMember ? MEMBER_PRICE : FULL_PRICE) * 100),
         currency: CURRENCY,
-        ref: reference,
-        callback: async (response) => {
-          const verifyResponse = await fetch(VERIFY_PAYSTACK_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              reference: response.reference,
-              email: data.email,
-              docId: docRef.id,
-            }),
-          });
-
-          if (!verifyResponse.ok) {
-            status.textContent = "Payment received, but verification failed. Please contact support.";
+        name: "RIGG Core",
+        description: [
+          isMember ? "Member price" : null,
+          personalization ? `Personalised: ${personalization.text}` : null,
+          "RIGG Core",
+        ].filter(Boolean).join(" · "),
+        callback: async (result) => {
+          if (result.error) {
+            status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
             status.className = "form-status error";
-            setSubmitError();
+            clearSubmitError();
             if (submitButton) {
               submitButton.disabled = false;
-              submitButton.textContent = "RESERVE";
+              submitButton.textContent = "ORDER NOW";
             }
             return;
           }
 
-          status.textContent = "Payment received. Your founders spot is confirmed.";
+          const chargeResponse = await fetch(CHARGE_YOCO_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: result.id,
+              email: data.email,
+              docId: docRef.id,
+              isMember,
+            }),
+          });
+
+          if (!chargeResponse.ok) {
+            status.textContent = "Payment received, but confirmation failed. Please contact support.";
+            status.className = "form-status error";
+            setSubmitError();
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = "ORDER NOW";
+            }
+            return;
+          }
+
+          status.textContent = "Payment received. Your order is confirmed.";
           status.className = "form-status success";
           clearSubmitError();
           await refreshCounter();
           form.reset();
           updatePrice();
         },
-        onClose: () => {
-          status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
-          status.className = "form-status error";
-          clearSubmitError();
-          if (submitButton) {
-            submitButton.disabled = false;
-            submitButton.textContent = "RESERVE";
-          }
-        },
       });
-
-      handler.openIframe();
     } catch (error) {
       status.textContent = "";
       status.className = "form-status";
       setSubmitError();
       if (submitButton) {
         submitButton.disabled = false;
-        submitButton.textContent = "RESERVE";
+        submitButton.textContent = "ORDER NOW";
       }
     }
   });
@@ -392,13 +540,42 @@ if (ecosystemCards.length) {
   };
 
   ecosystemCards.forEach((card) => {
-    card.addEventListener("click", () => toggleCard(card));
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".detail-notify, .detail-cta")) return;
+      toggleCard(card);
+    });
     card.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         toggleCard(card);
       }
     });
+  });
+
+  document.querySelectorAll(".detail-notify-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const product = btn.dataset.product;
+      const emailInput = btn.closest(".detail-notify")?.querySelector(".detail-email");
+      const email = emailInput?.value.trim();
+      if (!email || !email.includes("@")) {
+        if (emailInput) { emailInput.style.borderColor = "#f87171"; emailInput.focus(); }
+        return;
+      }
+      if (emailInput) emailInput.style.borderColor = "";
+      if (db) {
+        try {
+          await db.collection("waitlists").add({ product, email, created_at: new Date().toISOString() });
+        } catch (_) {}
+      }
+      btn.textContent = "You're on the list";
+      btn.disabled = true;
+      if (emailInput) { emailInput.disabled = true; emailInput.style.opacity = "0.4"; }
+    });
+  });
+
+  document.querySelectorAll(".detail-email").forEach((input) => {
+    input.addEventListener("click", (e) => e.stopPropagation());
   });
 }
 
@@ -533,7 +710,7 @@ const clarifyProduct = () => {
   if (heroHeader && !document.querySelector(".product-tagline")) {
     const tag = document.createElement("div");
     tag.className = "product-tagline";
-    tag.textContent = "Magnetic Gym Caddy & Organizer";
+    tag.textContent = "RIGG Core — Sport Carry System";
     heroHeader.parentNode.insertBefore(tag, heroHeader);
   }
 };
@@ -550,7 +727,7 @@ const populateFAQ = () => {
       label: "Shipping?",
       question: "When will my order ship?",
       answer:
-        "We are targeting to begin shipping Founder's Edition units in Late Q2 2024. You will receive a shipping notification when your order is on the way.",
+        "We dispatch within 7–14 business days of your order. You'll receive a shipping notification with tracking once your RIGG is on its way.",
     },
     {
       label: "Delays?",
@@ -637,11 +814,11 @@ const addFeatureDetails = () => {
   const featureCards = document.querySelectorAll("#features .card");
   const details = {
     "Magnetic Dock":
-      "Instantly snap RIGG to any gym rack, keeping your gear off the floor and exactly where you need it. No more bending down or searching for your bottle.",
+      "Snap RIGG to any metal surface — gym rack, court fence, frame, or bar. Your gear stays exactly where you need it, whatever sport you play.",
     "Everything in Reach":
-      "Dedicated slots for your phone, wallet, keys, and bottle mean no more fumbling. Everything has its place, so you can focus on your workout.",
+      "Phone, wallet, keys, bottle — all within arm's reach without being on your body. Grab what you need between sets, plays, or laps without breaking stride.",
     "Built Tough":
-      "Constructed with a scratch-proof shell and water-resistant materials, RIGG is designed to handle the toughest gym environments, day in and day out.",
+      "Scratch-proof shell. Water-resistant lining. Wipe clean in seconds. Built for gym floors, court-side conditions, and outdoor training environments alike.",
   };
 
   featureCards.forEach((card) => {
@@ -658,30 +835,3 @@ const addFeatureDetails = () => {
 
 window.addEventListener("DOMContentLoaded", addFeatureDetails);
 
-const enhanceFounderIdentity = () => {
-  const pricingCard = document.querySelector(".pricing-card");
-  if (pricingCard && !pricingCard.querySelector(".founder-explainer")) {
-    const explainer = document.createElement("div");
-    explainer.className = "founder-explainer";
-    explainer.innerHTML = `
-      <p>
-        <strong>Become a Co-Creator</strong>
-        Founders receive a sequentially numbered unit from the first batch and gain voting rights on future ecosystem modules. You help shape what we build next.
-      </p>
-    `;
-
-    // Insert before the pricing meta (deposit/social proof section)
-    const metaSection = pricingCard.querySelector(".pricing-meta");
-    if (metaSection) {
-      pricingCard.insertBefore(explainer, metaSection);
-    } else {
-      pricingCard.appendChild(explainer);
-    }
-  }
-};
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", enhanceFounderIdentity);
-} else {
-  enhanceFounderIdentity();
-}
