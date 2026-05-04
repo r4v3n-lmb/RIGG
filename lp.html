@@ -370,20 +370,6 @@
         </div>
 
         <div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-            <div class="region-selector-wrap">
-              <button class="region-pill" type="button">🇿🇦 ZAR</button>
-              <div class="region-dropdown">
-                <button class="region-option" data-region="ZA" type="button"><span>🇿🇦</span><span class="region-option-label">South Africa</span><span class="region-option-currency">ZAR</span></button>
-                <button class="region-option" data-region="US" type="button"><span>🇺🇸</span><span class="region-option-label">United States</span><span class="region-option-currency">USD</span></button>
-                <button class="region-option" data-region="GB" type="button"><span>🇬🇧</span><span class="region-option-label">United Kingdom</span><span class="region-option-currency">GBP</span></button>
-                <button class="region-option" data-region="AU" type="button"><span>🇦🇺</span><span class="region-option-label">Australia</span><span class="region-option-currency">AUD</span></button>
-                <button class="region-option" data-region="CA" type="button"><span>🇨🇦</span><span class="region-option-label">Canada</span><span class="region-option-currency">CAD</span></button>
-                <button class="region-option" data-region="IE" type="button"><span>🇮🇪</span><span class="region-option-label">Ireland</span><span class="region-option-currency">EUR</span></button>
-                <button class="region-option" data-region="NZ" type="button"><span>🇳🇿</span><span class="region-option-label">New Zealand</span><span class="region-option-currency">NZD</span></button>
-              </div>
-            </div>
-          </div>
           <div class="lp-price-row">
             <span class="lp-price" id="full-price">R499.99</span>
             <span class="lp-price-strike" id="original-price"></span>
@@ -512,21 +498,6 @@
       </div>
     </div>
 
-    <!-- ── Stripe payment modal ──────────────────────────────── -->
-    <div class="stripe-modal" id="stripe-modal" role="dialog" aria-modal="true">
-      <div class="stripe-card">
-        <button class="modal-close" id="stripe-close" aria-label="Close">&times;</button>
-        <p class="modal-eyebrow">Secure checkout</p>
-        <h2 class="modal-title">RIGG Core</h2>
-        <p class="stripe-order-total">Total: <strong id="stripe-amount"></strong></p>
-        <div id="stripe-card-element"></div>
-        <p class="notice" id="stripe-status" aria-live="polite"></p>
-        <button class="button primary stripe-pay-btn" id="stripe-pay-btn" type="button">Pay now</button>
-        <p class="stripe-powered">Secured by <strong>Stripe</strong></p>
-      </div>
-    </div>
-
-    <script src="https://js.stripe.com/v3/"></script>
     <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>

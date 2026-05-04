@@ -2,28 +2,12 @@ const form = document.getElementById("preorder-form");
 const status = document.getElementById("form-status");
 const fullPriceDisplay = document.getElementById("full-price");
 const originalPriceDisplay = document.getElementById("original-price");
-const REGIONS = {
-  ZA: { currency: "ZAR", locale: "en-ZA", flag: "🇿🇦", label: "South Africa",  full: 499.99, member: 449.99 },
-  US: { currency: "USD", locale: "en-US", flag: "🇺🇸", label: "United States", full: 45,     member: 40     },
-  GB: { currency: "GBP", locale: "en-GB", flag: "🇬🇧", label: "United Kingdom", full: 36,     member: 32     },
-  AU: { currency: "AUD", locale: "en-AU", flag: "🇦🇺", label: "Australia",      full: 65,     member: 58     },
-  CA: { currency: "CAD", locale: "en-CA", flag: "🇨🇦", label: "Canada",         full: 55,     member: 49     },
-  IE: { currency: "EUR", locale: "en-IE", flag: "🇮🇪", label: "Ireland",         full: 42,     member: 38     },
-  NZ: { currency: "NZD", locale: "en-NZ", flag: "🇳🇿", label: "New Zealand",    full: 72,     member: 65     },
-};
-const DEFAULT_REGION = "US";
-let activeRegion = "ZA";
+const FULL_PRICE = 499.99;
+const MEMBER_PRICE = 449.99;
 let isMember = false;
 let personalization = null;
 
-const STRIPE_PUBLIC_KEY = "pk_live_REPLACE_WITH_YOUR_STRIPE_PUBLIC_KEY";
-const CREATE_STRIPE_INTENT_URL = "https://us-central1-rigg-ae114.cloudfunctions.net/createStripeIntent";
-const CONFIRM_STRIPE_URL = "https://us-central1-rigg-ae114.cloudfunctions.net/confirmStripePayment";
-
-const getCurrentPrice = () => {
-  const r = REGIONS[activeRegion];
-  return isMember ? r.member : r.full;
-};
+const getCurrentPrice = () => isMember ? MEMBER_PRICE : FULL_PRICE;
 const launchDateAttr = document.body?.dataset?.launch;
 const LAUNCH_TARGET = new Date(launchDateAttr || "2026-04-30T23:59:00+02:00");
 let revealsInitialized = false;
@@ -70,22 +54,14 @@ if (window.firebase && typeof window.firebase.initializeApp === "function") {
   db = window.firebase.firestore();
 }
 
-const formatPrice = (amount, regionCode = activeRegion) => {
-  const r = REGIONS[regionCode] || REGIONS.ZA;
-  return new Intl.NumberFormat(r.locale, {
-    style: "currency",
-    currency: r.currency,
-    minimumFractionDigits: r.currency === "ZAR" ? 2 : 0,
-    maximumFractionDigits: r.currency === "ZAR" ? 2 : 0,
-  }).format(amount);
-};
+const formatZar = (amount) =>
+  new Intl.NumberFormat("en-ZA", { style: "currency", currency: "ZAR", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount);
 
 const updatePrice = () => {
-  const r = REGIONS[activeRegion];
-  if (fullPriceDisplay) fullPriceDisplay.textContent = formatPrice(getCurrentPrice());
+  if (fullPriceDisplay) fullPriceDisplay.textContent = formatZar(getCurrentPrice());
   if (originalPriceDisplay) {
     if (isMember) {
-      originalPriceDisplay.textContent = formatPrice(r.full);
+      originalPriceDisplay.textContent = formatZar(FULL_PRICE);
       originalPriceDisplay.style.display = "";
     } else {
       originalPriceDisplay.style.display = "none";
@@ -95,7 +71,6 @@ const updatePrice = () => {
   const memberBadge = document.getElementById("member-badge");
   if (memberTrigger) memberTrigger.style.display = isMember ? "none" : "";
   if (memberBadge) memberBadge.style.display = isMember ? "" : "none";
-  updateRegionUI();
 };
 
 
@@ -139,167 +114,6 @@ const updateBuildSection = () => {
   }
 };
 
-const detectRegion = async () => {
-  try {
-    const cached = sessionStorage.getItem("rigg-region");
-    if (cached && REGIONS[cached]) return cached;
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 3000);
-    const res = await fetch("https://ipapi.co/json/", { signal: ctrl.signal });
-    clearTimeout(timer);
-    const { country_code } = await res.json();
-    const code = REGIONS[country_code] ? country_code : DEFAULT_REGION;
-    sessionStorage.setItem("rigg-region", code);
-    return code;
-  } catch {
-    return DEFAULT_REGION;
-  }
-};
-
-const setRegion = (code) => {
-  if (!REGIONS[code]) return;
-  activeRegion = code;
-  sessionStorage.setItem("rigg-region", code);
-  updatePrice();
-};
-
-const updateRegionUI = () => {
-  const r = REGIONS[activeRegion];
-  document.querySelectorAll(".region-pill").forEach(el => {
-    el.textContent = `${r.flag} ${r.currency}`;
-  });
-  document.querySelectorAll(".region-option").forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.region === activeRegion);
-  });
-  const modalRegular = document.getElementById("modal-price-regular");
-  const modalMember  = document.getElementById("modal-price-member");
-  const modalSub     = document.getElementById("modal-sub");
-  if (modalRegular) modalRegular.textContent = formatPrice(r.full);
-  if (modalMember)  modalMember.textContent  = formatPrice(r.member);
-  if (modalSub)     modalSub.textContent     = `Members pay ${formatPrice(r.member)} instead of ${formatPrice(r.full)}. No spam — just launch updates and exclusive drops.`;
-};
-
-const initRegionSelector = () => {
-  document.querySelectorAll(".region-pill").forEach(pill => {
-    pill.addEventListener("click", (e) => {
-      e.stopPropagation();
-      document.querySelectorAll(".region-dropdown").forEach(d => d.classList.toggle("active"));
-    });
-  });
-  document.querySelectorAll(".region-option").forEach(btn => {
-    btn.addEventListener("click", () => {
-      setRegion(btn.dataset.region);
-      document.querySelectorAll(".region-dropdown").forEach(d => d.classList.remove("active"));
-    });
-  });
-  document.addEventListener("click", () => {
-    document.querySelectorAll(".region-dropdown").forEach(d => d.classList.remove("active"));
-  });
-  updateRegionUI();
-};
-
-let openStripeModal = null;
-
-const initStripeModal = () => {
-  const modal = document.getElementById("stripe-modal");
-  if (!modal || STRIPE_PUBLIC_KEY.includes("REPLACE") || !window.Stripe) return;
-
-  const stripe = window.Stripe(STRIPE_PUBLIC_KEY);
-  const elements = stripe.elements();
-  const cardEl = elements.create("card", {
-    style: {
-      base: {
-        color: "#f5f5f5",
-        fontFamily: "'Sora', sans-serif",
-        fontSize: "15px",
-        fontSmoothing: "antialiased",
-        "::placeholder": { color: "#b4b4b4" },
-      },
-      invalid: { color: "#ff6d6d" },
-    },
-  });
-  let cardMounted = false;
-
-  openStripeModal = ({ data, docRef, submitButton, setSubmitError, clearSubmitError }) => {
-    modal.classList.add("active");
-    document.body.style.overflow = "hidden";
-    if (!cardMounted) { cardEl.mount("#stripe-card-element"); cardMounted = true; }
-
-    const payBtn       = document.getElementById("stripe-pay-btn");
-    const stripeStatus = document.getElementById("stripe-status");
-    const stripeAmount = document.getElementById("stripe-amount");
-    if (stripeAmount) stripeAmount.textContent = formatPrice(getCurrentPrice());
-    if (stripeStatus) stripeStatus.textContent = "";
-    if (payBtn) payBtn.textContent = `Pay ${formatPrice(getCurrentPrice())}`;
-
-    const closeModal = () => {
-      modal.classList.remove("active");
-      document.body.style.overflow = "";
-      if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-    };
-    document.getElementById("stripe-close")?.addEventListener("click", closeModal, { once: true });
-    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); }, { once: true });
-
-    if (payBtn) {
-      payBtn.addEventListener("click", async () => {
-        payBtn.disabled = true;
-        payBtn.textContent = "Processing...";
-        if (stripeStatus) stripeStatus.textContent = "";
-        try {
-          const intentRes = await fetch(CREATE_STRIPE_INTENT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              amount: Math.round(getCurrentPrice() * 100),
-              currency: REGIONS[activeRegion].currency.toLowerCase(),
-              docId: docRef.id,
-              isMember,
-              email: data.email,
-            }),
-          });
-          const { clientSecret, error: intentError } = await intentRes.json();
-          if (intentError) throw new Error(intentError);
-
-          const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-              card: cardEl,
-              billing_details: {
-                name: `${data.name} ${data.surname}`.trim() || undefined,
-                email: data.email || undefined,
-              },
-            },
-          });
-
-          if (confirmError) {
-            if (stripeStatus) { stripeStatus.textContent = confirmError.message; stripeStatus.className = "form-status error"; }
-            payBtn.disabled = false;
-            payBtn.textContent = `Pay ${formatPrice(getCurrentPrice())}`;
-            return;
-          }
-
-          if (paymentIntent.status === "succeeded") {
-            await fetch(CONFIRM_STRIPE_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ paymentIntentId: paymentIntent.id, docId: docRef.id }),
-            });
-            modal.classList.remove("active");
-            document.body.style.overflow = "";
-            if (status) { status.textContent = "Payment received. Your order is confirmed."; status.className = "form-status success"; }
-            clearSubmitError();
-            form.reset();
-            updatePrice();
-            if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-          }
-        } catch {
-          if (stripeStatus) { stripeStatus.textContent = "Payment failed. Please try again."; stripeStatus.className = "form-status error"; }
-          payBtn.disabled = false;
-          payBtn.textContent = `Pay ${formatPrice(getCurrentPrice())}`;
-        }
-      }, { once: true });
-    }
-  };
-};
 
 const initBuildModal = (() => {
   let initialized = false;
@@ -435,8 +249,7 @@ const initMemberModal = () => {
   }
 };
 
-const initPricing = async () => {
-  activeRegion = await detectRegion();
+const initPricing = () => {
   updatePrice();
   updateCountdown();
   formatSpecs();
@@ -446,8 +259,6 @@ const initPricing = async () => {
   }
   initMemberModal();
   initBuildModal();
-  initRegionSelector();
-  initStripeModal();
 };
 
 const setupScrollReveals = () => {
@@ -538,9 +349,8 @@ if (form) {
       surname: surnameInput ? surnameInput.value.trim() : "",
       email: emailInput ? emailInput.value.trim() : "",
       number: numberInput ? numberInput.value.trim() : "",
-      currency: REGIONS[activeRegion].currency,
+      currency: "ZAR",
       price: getCurrentPrice(),
-      region: activeRegion,
       is_member: isMember,
       personalization: personalization ? { type: personalization.type, text: personalization.text } : null,
       paid: false,
@@ -572,51 +382,43 @@ if (form) {
         created_at: new Date().toISOString(),
       });
 
-      if (activeRegion === "ZA") {
-        const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
-        yoco.showPopup({
-          amountInCents: Math.round(getCurrentPrice() * 100),
-          currency: "ZAR",
-          name: "RIGG Core",
-          description: [
-            isMember ? "Member price" : null,
-            personalization ? `Personalised: ${personalization.text}` : null,
-            "RIGG Core",
-          ].filter(Boolean).join(" · "),
-          callback: async (result) => {
-            if (result.error) {
-              status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
-              status.className = "form-status error";
-              clearSubmitError();
-              if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-              return;
-            }
-            const chargeResponse = await fetch(CHARGE_YOCO_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token: result.id, email: data.email, docId: docRef.id, isMember }),
-            });
-            if (!chargeResponse.ok) {
-              status.textContent = "Payment received, but confirmation failed. Please contact support.";
-              status.className = "form-status error";
-              setSubmitError();
-              if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-              return;
-            }
-            status.textContent = "Payment received. Your order is confirmed.";
-            status.className = "form-status success";
+      const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
+      yoco.showPopup({
+        amountInCents: Math.round(getCurrentPrice() * 100),
+        currency: "ZAR",
+        name: "RIGG Core",
+        description: [
+          isMember ? "Member price" : null,
+          personalization ? `Personalised: ${personalization.text}` : null,
+          "RIGG Core",
+        ].filter(Boolean).join(" · "),
+        callback: async (result) => {
+          if (result.error) {
+            status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
+            status.className = "form-status error";
             clearSubmitError();
-            form.reset();
-            updatePrice();
-          },
-        });
-      } else if (typeof openStripeModal === "function") {
-        openStripeModal({ data, docRef, submitButton, setSubmitError, clearSubmitError });
-      } else {
-        status.textContent = "International checkout coming soon — we'll notify you when available.";
-        status.className = "form-status";
-        if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-      }
+            if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
+            return;
+          }
+          const chargeResponse = await fetch(CHARGE_YOCO_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: result.id, email: data.email, docId: docRef.id, isMember }),
+          });
+          if (!chargeResponse.ok) {
+            status.textContent = "Payment received, but confirmation failed. Please contact support.";
+            status.className = "form-status error";
+            setSubmitError();
+            if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
+            return;
+          }
+          status.textContent = "Payment received. Your order is confirmed.";
+          status.className = "form-status success";
+          clearSubmitError();
+          form.reset();
+          updatePrice();
+        },
+      });
     } catch (error) {
       status.textContent = "";
       status.className = "form-status";
