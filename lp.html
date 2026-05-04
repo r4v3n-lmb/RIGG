@@ -12,32 +12,49 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-      /* ── LP layout ─────────────────────────────────────────── */
-      .lp-wrap {
-        display: flex;
-        min-height: 100svh;
-        min-height: 100vh;
+      /* ── Reset for LP ───────────────────────────────────────── */
+      html, body {
+        height: 100%;
+        overflow: hidden;
       }
 
-      /* Left: product visual */
-      .lp-visual {
+      /* ── Full-screen stage ──────────────────────────────────── */
+      .lp-stage {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        background:
+          url("assets/20260319_0815_Active Lifestyle Collage_remix_01km2bqny4fc684tpsj5km2322.webp")
+          50% 35% / cover no-repeat;
+      }
+
+      /* Gradient: fades right → dark for the card */
+      .lp-stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          100deg,
+          rgba(5,5,5,0.18) 0%,
+          rgba(5,5,5,0.55) 45%,
+          rgba(5,5,5,0.96) 68%,
+          rgba(5,5,5,0.99) 100%
+        );
+        pointer-events: none;
+      }
+
+      /* ── Left: breathing room + logo ───────────────────────── */
+      .lp-scene {
         flex: 1;
-        position: sticky;
-        top: 0;
-        height: 100svh;
-        height: 100vh;
-        overflow: hidden;
-        background: #080808;
+        position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        justify-content: space-between;
+        padding: 32px 36px 36px;
       }
 
       .lp-logo {
-        position: absolute;
-        top: 28px;
-        left: 32px;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -45,301 +62,352 @@
       }
 
       .lp-logo img {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
         object-fit: contain;
       }
 
       .lp-logo-wordmark {
         font-family: "Rajdhani", sans-serif;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 700;
-        letter-spacing: 0.3em;
+        letter-spacing: 0.32em;
         color: var(--text);
+        opacity: 0.9;
       }
 
-      .lp-hero-img {
-        width: 88%;
-        max-width: 460px;
-        object-fit: contain;
-        display: block;
-        filter: drop-shadow(0 40px 80px rgba(0,0,0,0.6));
-      }
-
-      .lp-visual-caption {
-        position: absolute;
-        bottom: 32px;
-        left: 0;
-        right: 0;
-        text-align: center;
+      .lp-scene-foot {
         font-size: 0.72rem;
-        letter-spacing: 0.28em;
+        letter-spacing: 0.24em;
         text-transform: uppercase;
-        color: rgba(255,255,255,0.25);
+        color: rgba(255,255,255,0.22);
       }
 
-      /* Right: order form panel */
-      .lp-panel {
-        width: 480px;
+      /* ── Right: order card ──────────────────────────────────── */
+      .lp-card {
+        width: 440px;
         flex-shrink: 0;
-        background: var(--bg);
-        border-left: 1px solid var(--line);
-        overflow-y: auto;
-        padding: 48px 40px 56px;
+        position: relative;
+        z-index: 1;
+        background: rgba(6,6,6,0.92);
+        backdrop-filter: blur(18px) saturate(1.4);
+        -webkit-backdrop-filter: blur(18px) saturate(1.4);
+        border-left: 1px solid rgba(255,255,255,0.07);
         display: flex;
         flex-direction: column;
-        gap: 28px;
+        padding: 36px 32px 28px;
+        gap: 20px;
+        overflow-y: auto;
       }
 
-      .lp-eyebrow {
-        font-size: 0.68rem;
-        letter-spacing: 0.3em;
+      /* ── Card header ────────────────────────────────────────── */
+      .lp-card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .lp-card-eyebrow {
+        font-size: 0.64rem;
+        letter-spacing: 0.32em;
         text-transform: uppercase;
         color: var(--muted);
       }
 
-      .lp-title {
+      .lp-card-title {
         font-family: "Rajdhani", sans-serif;
-        font-size: clamp(2.4rem, 3vw, 3.2rem);
+        font-size: 2.2rem;
         font-weight: 700;
         letter-spacing: 0.2em;
         text-transform: uppercase;
         line-height: 1;
-        margin-top: -10px;
       }
 
-      .lp-tagline {
-        font-size: 0.95rem;
-        color: var(--muted);
-        line-height: 1.6;
-        margin-top: -12px;
-      }
-
-      .lp-benefits {
+      /* ── Price row ──────────────────────────────────────────── */
+      .lp-price-row {
         display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+        align-items: baseline;
+        gap: 12px;
       }
 
-      .lp-benefits span {
+      .lp-price {
+        font-family: "Rajdhani", sans-serif;
+        font-size: 2.4rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        line-height: 1;
+      }
+
+      .lp-price-strike {
+        font-size: 1rem;
+        color: #ff6d6d;
+        text-decoration: line-through;
+        display: none;
+      }
+
+      .lp-member-badge {
+        font-size: 0.68rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.5);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 999px;
+        padding: 3px 10px;
+        display: none;
+      }
+
+      /* ── Urgency ────────────────────────────────────────────── */
+      .lp-urgency {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 13px;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        background: rgba(10,10,10,0.7);
+        gap: 8px;
         font-size: 0.8rem;
         color: var(--muted);
       }
 
-      .lp-benefits span::before {
-        content: "✓";
-        font-size: 0.72rem;
-        color: rgba(255,255,255,0.4);
-        font-weight: 700;
+      .lp-urgency-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #ef4444;
+        box-shadow: 0 0 8px rgba(239,68,68,0.7);
+        flex-shrink: 0;
+        animation: pulse 2s infinite;
       }
 
-      .lp-divider {
+      .lp-urgency strong {
+        color: var(--text);
+      }
+
+      /* ── Divider ────────────────────────────────────────────── */
+      .lp-rule {
         height: 1px;
-        background: var(--line);
-        margin: 0 -4px;
-      }
-
-      /* Reuse founder-pricing but tighten slightly */
-      .lp-panel .founder-pricing {
-        margin-top: 0;
-      }
-
-      .lp-panel .dispatch-note {
-        margin-top: -12px;
-      }
-
-      .lp-panel .urgency-strip {
-        margin-top: 0;
-      }
-
-      /* Form inside panel — remove card chrome */
-      .lp-panel .form {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0;
+        background: rgba(255,255,255,0.06);
         margin: 0;
       }
 
-      .lp-panel .form .wrapper {
-        padding: 0;
+      /* ── Form override: 2-column grid ───────────────────────── */
+      .lp-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
 
-      .lp-back {
-        display: inline-flex;
+      .lp-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      /* Compact inputs */
+      .lp-form .input-group {
+        margin: 0;
+      }
+
+      .lp-form .input {
+        height: 44px;
+        font-size: 0.84rem;
+        padding: 0 12px;
+        padding-top: 14px;
+      }
+
+      .lp-form .input-label {
+        font-size: 0.7rem;
+        top: 13px;
+        left: 12px;
+      }
+
+      .lp-form .input:focus ~ .input-label,
+      .lp-form .input:not(:placeholder-shown) ~ .input-label {
+        font-size: 0.58rem;
+        top: 5px;
+      }
+
+      /* Personalise strip — tighter */
+      .lp-form .personalise-section {
+        margin: 0;
+      }
+
+      .lp-form .personalise-trigger {
+        padding: 10px 14px;
+      }
+
+      /* Submit */
+      .lp-submit {
+        width: 100%;
+        padding: 14px;
+        font-size: 0.88rem;
+        letter-spacing: 0.22em;
+        border-radius: 12px;
+      }
+
+      /* ── Footer links ───────────────────────────────────────── */
+      .lp-card-foot {
+        display: flex;
         align-items: center;
-        gap: 6px;
-        font-size: 0.78rem;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: auto;
+        padding-top: 4px;
+      }
+
+      .lp-member-trigger {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.74rem;
         color: var(--muted);
-        text-decoration: none;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        padding: 0;
         transition: color 0.2s ease;
-        margin-bottom: -10px;
       }
 
-      .lp-back:hover { color: var(--text); }
+      .lp-member-trigger:hover { color: var(--text); }
 
-      .lp-back svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
+      .lp-full-site {
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.22);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.2s ease;
       }
 
-      /* ── Mobile: stack vertically ──────────────────────────── */
-      @media (max-width: 860px) {
-        .lp-wrap {
+      .lp-full-site:hover { color: var(--muted); }
+
+      /* ── Trust pills compact ────────────────────────────────── */
+      .lp-trust {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .lp-trust span {
+        font-size: 0.68rem;
+        color: rgba(255,255,255,0.3);
+        letter-spacing: 0.06em;
+        padding: 3px 10px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 999px;
+      }
+
+      /* ── Mobile ─────────────────────────────────────────────── */
+      @media (max-width: 720px) {
+        html, body { overflow: hidden; }
+
+        .lp-stage {
           flex-direction: column;
+          background-position: 50% 20%;
         }
 
-        .lp-visual {
-          position: relative;
-          height: auto;
-          min-height: 52vw;
-          padding: 48px 24px 36px;
+        .lp-stage::before {
+          background: linear-gradient(
+            180deg,
+            rgba(5,5,5,0.1)  0%,
+            rgba(5,5,5,0.55) 42%,
+            rgba(5,5,5,0.97) 62%,
+            rgba(5,5,5,0.99) 100%
+          );
         }
 
-        .lp-logo {
-          top: 20px;
-          left: 20px;
+        .lp-scene {
+          flex: none;
+          height: 36vmax;
+          padding: 22px 20px 20px;
+          flex-direction: row;
+          align-items: flex-start;
+          justify-content: flex-start;
         }
 
-        .lp-hero-img {
-          width: 70%;
-          max-width: 320px;
-        }
+        .lp-scene-foot { display: none; }
 
-        .lp-visual-caption {
-          display: none;
-        }
-
-        .lp-panel {
+        .lp-card {
           width: 100%;
+          flex: 1;
           border-left: none;
-          border-top: 1px solid var(--line);
-          padding: 36px 24px 48px;
-          gap: 22px;
+          border-top: 1px solid rgba(255,255,255,0.07);
+          padding: 20px 18px 16px;
+          gap: 14px;
+          overflow-y: auto;
         }
+
+        .lp-card-title { font-size: 1.9rem; }
+        .lp-price { font-size: 2rem; }
       }
 
-      @media (max-width: 480px) {
-        .lp-visual {
-          min-height: 60vw;
-          padding: 44px 16px 28px;
+      @media (max-width: 420px) {
+        .lp-scene { height: 38vmax; }
+
+        .lp-card {
+          padding: 16px 16px 12px;
+          gap: 12px;
         }
 
-        .lp-hero-img {
-          width: 78%;
-        }
+        .lp-card-title { font-size: 1.7rem; }
+        .lp-price { font-size: 1.8rem; }
 
-        .lp-panel {
-          padding: 28px 18px 40px;
-          gap: 18px;
-        }
+        .lp-fields { gap: 8px; }
 
-        .lp-title {
-          font-size: clamp(2.1rem, 9vw, 2.6rem);
-        }
+        .lp-form { gap: 8px; }
+
+        .lp-submit { padding: 12px; font-size: 0.84rem; }
       }
     </style>
   </head>
   <body>
-    <div class="lp-wrap">
+    <div class="lp-stage">
 
-      <!-- Left: sticky product visual -->
-      <div class="lp-visual">
+      <!-- Left: image breathes here, logo sits top-left -->
+      <div class="lp-scene">
         <a class="lp-logo" href="index.html" aria-label="RIGG home">
           <img src="assets/rigg-logo.png" alt="RIGG" />
           <span class="lp-logo-wordmark">RIGG</span>
         </a>
-        <img class="lp-hero-img" src="assets/hero.svg" alt="RIGG Core — magnetic sport carry system" />
-        <p class="lp-visual-caption">RIGG Core — Magnetic Sport Carry System</p>
+        <p class="lp-scene-foot">Magnetic Sport Carry System</p>
       </div>
 
-      <!-- Right: order panel -->
-      <div class="lp-panel">
+      <!-- Right: order card -->
+      <div class="lp-card">
 
-        <a class="lp-back" href="index.html">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"/>
-          </svg>
-          Full site
-        </a>
+        <div class="lp-card-header">
+          <p class="lp-card-eyebrow">First production run · Now open</p>
+          <h1 class="lp-card-title">RIGG Core</h1>
+        </div>
 
         <div>
-          <p class="lp-eyebrow">First Production Run</p>
-          <h1 class="lp-title">RIGG Core</h1>
-          <p class="lp-tagline">Your phone, keys and water — always within reach. No pockets. No armband. Just magnetic dock.</p>
-        </div>
-
-        <div class="lp-benefits">
-          <span>Magnetic dock system</span>
-          <span>Free personalisation</span>
-          <span>Insulated bottle pouch</span>
-          <span>Waterproof inner zip</span>
-          <span>Ships in 7–14 days</span>
-        </div>
-
-        <div class="lp-divider"></div>
-
-        <div class="founder-pricing">
-          <div>
-            <span class="label">Price</span>
-            <span class="price-inline">
-              <span id="full-price">R499.99</span>
-              <span id="original-price" class="strikethrough" style="display:none"></span>
-            </span>
+          <div class="lp-price-row">
+            <span class="lp-price" id="full-price">R499.99</span>
+            <span class="lp-price-strike" id="original-price"></span>
+            <span class="lp-member-badge" id="member-badge">Member price</span>
           </div>
-          <div>
-            <span class="label">Dispatch</span>
-            <span>7–14 business days</span>
+          <div class="lp-urgency" style="margin-top:8px">
+            <span class="lp-urgency-dot" aria-hidden="true"></span>
+            <span><strong><span class="counter-value">27</span> units</strong> left from the first run</span>
           </div>
         </div>
 
-        <p class="dispatch-note">
-          <span id="member-badge" class="member-badge" style="display:none">Member price applied</span>
-          <button class="member-trigger" id="member-trigger" type="button">Join RIGG Members and save 10%</button>
-        </p>
+        <div class="lp-rule"></div>
 
-        <div class="urgency-strip">
-          <span class="urgency-dot" aria-hidden="true"></span>
-          <strong><span class="counter-value">27</span> units remaining</strong> from the first production run
-        </div>
-
-        <div class="lp-divider"></div>
-
-        <form class="form" id="preorder-form">
-          <ul class="wrapper">
-            <li style="--i:4;">
-              <div class="input-group">
-                <input id="name" name="name" class="input" type="text" placeholder=" " autocomplete="given-name" />
-                <label for="name" class="input-label">Name</label>
-              </div>
-            </li>
-            <li style="--i:3;">
-              <div class="input-group">
-                <input id="surname" name="surname" class="input" type="text" placeholder=" " autocomplete="family-name" />
-                <label for="surname" class="input-label">Surname</label>
-              </div>
-            </li>
-            <li style="--i:2;">
-              <div class="input-group">
-                <input id="number" name="number" class="input" type="tel" placeholder=" " autocomplete="tel" />
-                <label for="number" class="input-label">Phone number</label>
-              </div>
-            </li>
-            <li style="--i:1;">
-              <div class="input-group">
-                <input id="email" name="email" class="input" type="email" placeholder=" " autocomplete="email" />
-                <label for="email" class="input-label">E-mail</label>
-              </div>
-            </li>
-          </ul>
+        <form class="lp-form" id="preorder-form">
+          <div class="lp-fields">
+            <div class="input-group">
+              <input id="name" name="name" class="input" type="text" placeholder=" " autocomplete="given-name" />
+              <label for="name" class="input-label">Name</label>
+            </div>
+            <div class="input-group">
+              <input id="surname" name="surname" class="input" type="text" placeholder=" " autocomplete="family-name" />
+              <label for="surname" class="input-label">Surname</label>
+            </div>
+            <div class="input-group">
+              <input id="number" name="number" class="input" type="tel" placeholder=" " autocomplete="tel" />
+              <label for="number" class="input-label">Phone</label>
+            </div>
+            <div class="input-group">
+              <input id="email" name="email" class="input" type="email" placeholder=" " autocomplete="email" />
+              <label for="email" class="input-label">Email</label>
+            </div>
+          </div>
 
           <div class="personalise-section">
             <button class="personalise-trigger" id="build-trigger" type="button">
@@ -350,7 +418,7 @@
               </span>
               <div class="personalise-label-group">
                 <strong>Personalise &amp; Configure</strong>
-                <span>Name · Dock upgrade · Add-on modules · Free</span>
+                <span>Name · Dock upgrade · Add-ons · Free</span>
               </div>
               <span class="personalise-cta">Setup +</span>
             </button>
@@ -361,15 +429,20 @@
             </div>
           </div>
 
-          <button class="form-submit" type="submit">ORDER NOW</button>
+          <button class="form-submit lp-submit" type="submit">ORDER NOW</button>
           <p class="notice" id="form-status" aria-live="polite"></p>
-
-          <div class="trust-pills">
-            <span>Secure Yoco checkout</span>
-            <span>Email confirmation</span>
-            <span>Fully refundable</span>
-          </div>
         </form>
+
+        <div class="lp-trust">
+          <span>Secure Yoco checkout</span>
+          <span>Email confirmation</span>
+          <span>Fully refundable</span>
+        </div>
+
+        <div class="lp-card-foot">
+          <button class="lp-member-trigger" id="member-trigger" type="button">Join Members &amp; save 10%</button>
+          <a class="lp-full-site" href="index.html">Full site &rarr;</a>
+        </div>
 
       </div>
     </div>
