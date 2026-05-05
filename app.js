@@ -1,13 +1,10 @@
 const form = document.getElementById("preorder-form");
 const status = document.getElementById("form-status");
 const fullPriceDisplay = document.getElementById("full-price");
-const originalPriceDisplay = document.getElementById("original-price");
 const FULL_PRICE = 499.99;
-const MEMBER_PRICE = 449.99;
-let isMember = false;
 let personalization = null;
 
-const getCurrentPrice = () => isMember ? MEMBER_PRICE : FULL_PRICE;
+const getCurrentPrice = () => FULL_PRICE;
 const launchDateAttr = document.body?.dataset?.launch;
 const LAUNCH_TARGET = new Date(launchDateAttr || "2026-04-30T23:59:00+02:00");
 let revealsInitialized = false;
@@ -59,18 +56,6 @@ const formatZar = (amount) =>
 
 const updatePrice = () => {
   if (fullPriceDisplay) fullPriceDisplay.textContent = formatZar(getCurrentPrice());
-  if (originalPriceDisplay) {
-    if (isMember) {
-      originalPriceDisplay.textContent = formatZar(FULL_PRICE);
-      originalPriceDisplay.style.display = "";
-    } else {
-      originalPriceDisplay.style.display = "none";
-    }
-  }
-  const memberTrigger = document.getElementById("member-trigger");
-  const memberBadge = document.getElementById("member-badge");
-  if (memberTrigger) memberTrigger.style.display = isMember ? "none" : "";
-  if (memberBadge) memberBadge.style.display = isMember ? "" : "none";
 };
 
 
@@ -203,51 +188,6 @@ const initBuildModal = (() => {
   };
 })();
 
-const initMemberModal = () => {
-  const modal = document.getElementById("member-modal");
-  if (!modal) return;
-
-  const openModal = () => {
-    modal.classList.add("active");
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeModal = () => {
-    modal.classList.remove("active");
-    document.body.style.overflow = "";
-    localStorage.setItem("rigg-modal-seen", "1");
-  };
-
-  document.getElementById("modal-close")?.addEventListener("click", closeModal);
-  document.getElementById("modal-skip")?.addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
-  document.getElementById("member-trigger")?.addEventListener("click", openModal);
-
-  document.getElementById("modal-join")?.addEventListener("click", async () => {
-    const emailInput = document.getElementById("modal-email");
-    const email = emailInput?.value.trim();
-    if (!email || !email.includes("@")) {
-      if (emailInput) {
-        emailInput.classList.add("input-error");
-        emailInput.focus();
-      }
-      return;
-    }
-    emailInput?.classList.remove("input-error");
-    if (db) {
-      try {
-        await db.collection("members").doc(email).set({ email, joined_at: new Date().toISOString() });
-      } catch (_) {}
-    }
-    isMember = true;
-    updatePrice();
-    closeModal();
-  });
-
-  if (!localStorage.getItem("rigg-modal-seen")) {
-    setTimeout(openModal, 2500);
-  }
-};
 
 const initPricing = () => {
   updatePrice();
@@ -257,7 +197,6 @@ const initPricing = () => {
     setupScrollReveals();
     revealsInitialized = true;
   }
-  initMemberModal();
   initBuildModal();
 };
 
@@ -322,112 +261,9 @@ try {
 }
 
 if (form) {
-  form.addEventListener("submit", async (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const submitButton = form.querySelector('button[type="submit"]');
-    const setSubmitError = () => {
-      if (submitButton) {
-        submitButton.classList.add("error");
-      }
-    };
-    const clearSubmitError = () => {
-      if (submitButton) {
-        submitButton.classList.remove("error");
-      }
-    };
-    clearSubmitError();
-    if (submitButton) {
-      submitButton.disabled = true;
-      submitButton.textContent = "Processing...";
-    }
-    const nameInput = form.querySelector('[name="name"]');
-    const surnameInput = form.querySelector('[name="surname"]');
-    const emailInput = form.querySelector('[name="email"]');
-    const numberInput = form.querySelector('[name="number"]');
-    const data = {
-      name: nameInput ? nameInput.value.trim() : "",
-      surname: surnameInput ? surnameInput.value.trim() : "",
-      email: emailInput ? emailInput.value.trim() : "",
-      number: numberInput ? numberInput.value.trim() : "",
-      currency: "ZAR",
-      price: getCurrentPrice(),
-      is_member: isMember,
-      personalization: personalization ? { type: personalization.type, text: personalization.text } : null,
-      paid: false,
-    };
-
-    if (!data.email && !data.number) {
-      status.textContent = "Please provide an email or number.";
-      setSubmitError();
-      if (submitButton) {
-        submitButton.disabled = false;
-      submitButton.textContent = "ORDER NOW";
-      }
-      return;
-    }
-
-    status.textContent = "Submitting your reservation...";
-    status.className = "form-status submitting";
-
-    try {
-      if (!db) {
-        throw new Error("Firestore not available.");
-      }
-      if (!window.YocoSDK) {
-        throw new Error("Yoco not available.");
-      }
-
-      const docRef = await db.collection("preorders").add({
-        ...data,
-        created_at: new Date().toISOString(),
-      });
-
-      const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
-      yoco.showPopup({
-        amountInCents: Math.round(getCurrentPrice() * 100),
-        currency: "ZAR",
-        name: "RIGG Core",
-        description: [
-          isMember ? "Member price" : null,
-          personalization ? `Personalised: ${personalization.text}` : null,
-          "RIGG Core",
-        ].filter(Boolean).join(" · "),
-        callback: async (result) => {
-          if (result.error) {
-            status.textContent = "Payment cancelled. Your reservation is saved but unpaid.";
-            status.className = "form-status error";
-            clearSubmitError();
-            if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-            return;
-          }
-          const chargeResponse = await fetch(CHARGE_YOCO_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: result.id, email: data.email, docId: docRef.id, isMember }),
-          });
-          if (!chargeResponse.ok) {
-            status.textContent = "Payment received, but confirmation failed. Please contact support.";
-            status.className = "form-status error";
-            setSubmitError();
-            if (submitButton) { submitButton.disabled = false; submitButton.textContent = "ORDER NOW"; }
-            return;
-          }
-          status.textContent = "Payment received. Your order is confirmed.";
-          status.className = "form-status success";
-          clearSubmitError();
-          form.reset();
-          updatePrice();
-        },
-      });
-    } catch (error) {
-      status.textContent = "";
-      status.className = "form-status";
-      setSubmitError();
-      if (submitButton) {
-        submitButton.disabled = false;
-        submitButton.textContent = "ORDER NOW";
-      }
-    }
+    window.location.href = "https://pay.yoco.com/r/2D9yPL";
   });
 }
 
