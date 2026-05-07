@@ -40,10 +40,6 @@ const FIREBASE_CONFIG = {
   appId: "1:22084213263:web:fd683d467cedd60076a17a",
   measurementId: "G-K29G7PVKYS",
 };
-const CHARGE_YOCO_URL =
-  "https://us-central1-rigg-ae114.cloudfunctions.net/chargeYoco";
-// Yoco Dashboard → Developers → API Keys → Public key
-const YOCO_PUBLIC_KEY = "pk_test_REPLACE_WITH_YOUR_YOCO_PUBLIC_KEY";
 
 let db = null;
 if (window.firebase && typeof window.firebase.initializeApp === "function") {
@@ -261,8 +257,21 @@ try {
 }
 
 if (form) {
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const submitBtn = form.querySelector('[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Redirecting…"; }
+    if (db && personalization) {
+      try {
+        await db.collection("preorders").add({
+          personalization_type: personalization.type,
+          personalization_text: personalization.text,
+          status: "pending_payment",
+          created_at: new Date().toISOString(),
+          source: window.location.pathname.includes("lp") ? "lp" : "main",
+        });
+      } catch (_) {}
+    }
     window.location.href = "https://pay.yoco.com/r/2D9yPL";
   });
 }
@@ -456,19 +465,25 @@ const wireCtas = () => {
 };
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", wireCtas);
+  document.addEventListener("DOMContentLoaded", () => { wireCtas(); wireEmailFallback(); });
 } else {
   wireCtas();
+  wireEmailFallback();
 }
+updateOrderCount();
 
 const initVideos = () => {
-  const videos = document.querySelectorAll("video");
-  videos.forEach((video) => {
+  document.querySelectorAll("video").forEach((video) => {
     if (video.readyState >= 3) {
       video.classList.add("loaded");
     } else {
       video.addEventListener("canplay", () => video.classList.add("loaded"), { once: true });
     }
+    video.querySelectorAll("source").forEach((source) => {
+      source.addEventListener("error", () => {
+        video.closest("section")?.style.setProperty("display", "none");
+      }, { once: true });
+    });
   });
 };
 
@@ -597,6 +612,47 @@ const clarifySpecs = () => {
 };
 
 window.addEventListener("DOMContentLoaded", clarifySpecs);
+
+const wireEmailFallback = () => {
+  document.querySelectorAll(".email-fallback, .newsletter-card").forEach((block) => {
+    const input = block.querySelector("input[type='email']");
+    const btn = block.querySelector("button");
+    if (!input || !btn || btn.dataset.wired) return;
+    btn.dataset.wired = "true";
+    btn.addEventListener("click", async () => {
+      const email = input.value.trim();
+      if (!email || !email.includes("@")) {
+        input.style.borderColor = "#f87171";
+        input.focus();
+        return;
+      }
+      input.style.borderColor = "";
+      if (db) {
+        try {
+          await db.collection("waitlists").add({ product: "core", email, created_at: new Date().toISOString() });
+        } catch (_) {}
+      }
+      btn.textContent = "You're on the list";
+      btn.disabled = true;
+      input.disabled = true;
+      input.style.opacity = "0.4";
+    });
+  });
+};
+
+const updateOrderCount = async () => {
+  if (!db) return;
+  try {
+    const snap = await db.collection("preorders").count().get();
+    const count = snap.data().count;
+    if (count > 0) {
+      document.querySelectorAll(".order-count").forEach((el) => {
+        el.textContent = `${count} reserved · `;
+        el.style.display = "";
+      });
+    }
+  } catch (_) {}
+};
 
 const addFeatureDetails = () => {
   const featureCards = document.querySelectorAll("#features .card");
