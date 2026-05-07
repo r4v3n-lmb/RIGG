@@ -41,6 +41,10 @@ const FIREBASE_CONFIG = {
   measurementId: "G-K29G7PVKYS",
 };
 
+// Replace with your live Yoco public key from the Yoco Dashboard → Developers → API Keys
+const YOCO_PUBLIC_KEY = "pk_test_REPLACE_WITH_YOUR_YOCO_PUBLIC_KEY";
+const CHARGE_YOCO_URL = "https://us-central1-rigg-ae114.cloudfunctions.net/chargeYoco";
+
 let db = null;
 if (window.firebase && typeof window.firebase.initializeApp === "function") {
   window.firebase.initializeApp(FIREBASE_CONFIG);
@@ -260,18 +264,64 @@ if (form) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Redirecting…"; }
+    const resetBtn = () => {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Continue to Yoco →"; }
+    };
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Processing…"; }
+
+    // Save personalization to Firestore and capture doc ID
+    let docId = null;
     if (db && personalization) {
       try {
-        await db.collection("preorders").add({
+        const ref = await db.collection("preorders").add({
           personalization_type: personalization.type,
           personalization_text: personalization.text,
           status: "pending_payment",
           created_at: new Date().toISOString(),
           source: window.location.pathname.includes("lp") ? "lp" : "main",
         });
+        docId = ref.id;
       } catch (_) {}
     }
+
+    // Inline Yoco SDK checkout (requires real public key + deployed Cloud Function)
+    if (
+      YOCO_PUBLIC_KEY !== "pk_test_REPLACE_WITH_YOUR_YOCO_PUBLIC_KEY" &&
+      window.YocoSDK
+    ) {
+      try {
+        const yoco = new window.YocoSDK({ publicKey: YOCO_PUBLIC_KEY });
+        yoco.showPopup({
+          amountInCents: Math.round(getCurrentPrice() * 100),
+          currency: "ZAR",
+          name: "RIGG Core",
+          description: personalization ? `Personalised: ${personalization.text}` : "Sport Carry System",
+          callback: async (result) => {
+            if (result.error) {
+              resetBtn();
+              if (status) status.textContent = result.error.message || "Payment failed. Please try again.";
+              return;
+            }
+            try {
+              const res = await fetch(CHARGE_YOCO_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: result.id, docId }),
+              });
+              if (!res.ok) throw new Error();
+              if (submitBtn) submitBtn.textContent = "Order confirmed!";
+              if (status) status.textContent = "Payment successful — we'll be in touch shortly.";
+            } catch (_) {
+              resetBtn();
+              if (status) status.textContent = "Something went wrong. Please try again.";
+            }
+          },
+        });
+        return;
+      } catch (_) {}
+    }
+
+    // Fallback: redirect to Yoco payment link
     window.location.href = "https://pay.yoco.com/r/2D9yPL";
   });
 }
@@ -465,10 +515,19 @@ const wireCtas = () => {
 };
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => { wireCtas(); wireEmailFallback(); });
+  document.addEventListener("DOMContentLoaded", () => {
+    wireCtas();
+    wireEmailFallback();
+    initMobileCta();
+    initExitIntent();
+    initBagPhoto();
+  });
 } else {
   wireCtas();
   wireEmailFallback();
+  initMobileCta();
+  initExitIntent();
+  initBagPhoto();
 }
 updateOrderCount();
 
@@ -612,6 +671,69 @@ const clarifySpecs = () => {
 };
 
 window.addEventListener("DOMContentLoaded", clarifySpecs);
+
+const initMobileCta = () => {
+  const bar = document.getElementById("mobile-cta-bar");
+  if (!bar) return;
+  const preorder = document.getElementById("preorder");
+  if (preorder) {
+    new IntersectionObserver(
+      ([entry]) => bar.classList.toggle("hide", entry.isIntersecting),
+      { threshold: 0.2 }
+    ).observe(preorder);
+  }
+};
+
+const initExitIntent = () => {
+  const modal = document.getElementById("member-modal");
+  if (!modal) return;
+
+  let triggered = false;
+  const trigger = () => {
+    if (triggered) return;
+    triggered = true;
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  };
+
+  document.addEventListener("mouseleave", (e) => { if (e.clientY < 0) trigger(); });
+  setTimeout(trigger, 30000);
+
+  const close = () => { modal.classList.remove("active"); document.body.style.overflow = ""; };
+  document.getElementById("modal-close")?.addEventListener("click", close);
+  document.getElementById("modal-skip")?.addEventListener("click", close);
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+
+  document.getElementById("modal-join")?.addEventListener("click", async () => {
+    const emailEl = document.getElementById("modal-email");
+    const email = emailEl?.value.trim();
+    if (!email || !email.includes("@")) { emailEl?.focus(); return; }
+    if (db) {
+      try {
+        await db.collection("waitlists").add({
+          product: "core", email, discount: true,
+          source: "exit_intent", created_at: new Date().toISOString(),
+        });
+      } catch (_) {}
+    }
+    const joinBtn = document.getElementById("modal-join");
+    if (joinBtn) { joinBtn.textContent = "You're on the list!"; joinBtn.disabled = true; }
+    if (emailEl) { emailEl.disabled = true; emailEl.style.opacity = "0.4"; }
+    setTimeout(close, 1800);
+  });
+};
+
+const initBagPhoto = () => {
+  document.querySelectorAll(".bag-photo").forEach((img) => {
+    const activate = () => img.classList.add("loaded");
+    if (img.complete && img.naturalWidth > 0) {
+      activate();
+    } else {
+      img.addEventListener("load", activate, { once: true });
+      img.addEventListener("error", () => { img.style.display = "none"; }, { once: true });
+    }
+  });
+};
 
 const wireEmailFallback = () => {
   document.querySelectorAll(".email-fallback, .newsletter-card").forEach((block) => {
