@@ -45,6 +45,22 @@ const FIREBASE_CONFIG = {
 const YOCO_PUBLIC_KEY = "pk_test_REPLACE_WITH_YOUR_YOCO_PUBLIC_KEY";
 const CHARGE_YOCO_URL = "https://us-central1-rigg-ae114.cloudfunctions.net/chargeYoco";
 
+// iOS Safari needs position:fixed, not overflow:hidden, to reliably lock scroll
+const lockScroll = () => {
+  if (document.body.dataset.scrollLocked) return;
+  const y = window.scrollY;
+  document.body.style.cssText += `position:fixed;top:-${y}px;width:100%;`;
+  document.body.dataset.scrollLocked = y;
+};
+const unlockScroll = () => {
+  const y = parseInt(document.body.dataset.scrollLocked || "0");
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.width = "";
+  delete document.body.dataset.scrollLocked;
+  window.scrollTo(0, y);
+};
+
 let db = null;
 if (window.firebase && typeof window.firebase.initializeApp === "function") {
   window.firebase.initializeApp(FIREBASE_CONFIG);
@@ -118,13 +134,13 @@ const initBuildModal = (() => {
 
     const openModal = () => {
       modal.classList.add("active");
-      document.body.style.overflow = "hidden";
-      setTimeout(() => input?.focus(), 100);
+      lockScroll();
+      setTimeout(() => input?.focus(), 500);
     };
 
     const closeModal = () => {
       modal.classList.remove("active");
-      document.body.style.overflow = "";
+      unlockScroll();
     };
 
     const updatePreview = () => {
@@ -276,7 +292,7 @@ if (form) {
           personalization_text: personalization.text,
           status: "pending_payment",
           created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString(),
-          source: window.location.pathname.includes("lp") ? "lp" : "main",
+          source: window.location.pathname.includes("/lp.html") ? "lp" : "main",
         });
         docId = ref.id;
       } catch (_) {}
@@ -448,14 +464,14 @@ if (galleryTrack) {
       lightboxImg.src = e.target.src;
       lightbox.classList.add("active");
       galleryTrack.classList.add("paused");
-      document.body.style.overflow = "hidden";
+      lockScroll();
     }
   });
 
   lightbox.addEventListener("click", () => {
     lightbox.classList.remove("active");
     galleryTrack.classList.remove("paused");
-    document.body.style.overflow = "";
+    unlockScroll();
   });
 }
 
@@ -482,7 +498,7 @@ const wireCtas = () => {
 
         e.preventDefault();
         if (form) {
-          form.scrollIntoView({ behavior: "smooth", block: "center" });
+          form.scrollIntoView({ behavior: "smooth", block: "start" });
           const input = form.querySelector("input");
           if (input) setTimeout(() => input.focus({ preventScroll: true }), 500);
         }
@@ -669,17 +685,21 @@ const initExitIntent = () => {
   if (!modal) return;
 
   let triggered = false;
+  let exitTimer = null;
   const trigger = () => {
     if (triggered) return;
     triggered = true;
     modal.classList.add("active");
-    document.body.style.overflow = "hidden";
+    lockScroll();
   };
 
   document.addEventListener("mouseleave", (e) => { if (e.clientY < 0) trigger(); });
-  setTimeout(trigger, 30000);
+  exitTimer = setTimeout(trigger, 60000);
 
-  const close = () => { modal.classList.remove("active"); document.body.style.overflow = ""; };
+  const cancelTimer = () => { if (exitTimer) { clearTimeout(exitTimer); exitTimer = null; } };
+  document.getElementById("preorder-form")?.addEventListener("focusin", cancelTimer, { once: true });
+
+  const close = () => { modal.classList.remove("active"); unlockScroll(); };
   document.getElementById("modal-close")?.addEventListener("click", close);
   document.getElementById("modal-skip")?.addEventListener("click", close);
   modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
@@ -752,7 +772,7 @@ const initBundleBuilder = () => {
   orderBtn.addEventListener("click", async () => {
     const sel = selected();
     const email = emailInput?.value.trim();
-    if (sel.length > 0 && (!email || !email.includes("@"))) {
+    if (sel.length > 0 && (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
       if (emailInput) { emailInput.style.borderColor = "#f87171"; emailInput.focus(); }
       return;
     }

@@ -2217,6 +2217,7 @@ footer {
 
 .type-tab {
   padding: 7px 20px;
+  min-height: 44px;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: transparent;
