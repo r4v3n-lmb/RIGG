@@ -21,6 +21,41 @@
       href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- GA4 — measurement ID from Firebase config -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-K29G7PVKYS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-K29G7PVKYS');
+    </script>
+    <!-- Microsoft Clarity — replace YOUR_CLARITY_PROJECT_ID after creating a project at clarity.microsoft.com -->
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window,document,"clarity","script","YOUR_CLARITY_PROJECT_ID");
+    </script>
+    <!-- Schema.org Product markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "RIGG Core",
+      "description": "Magnetic sport carry system for every athlete. Mounts to any metal surface — gym rack, court fence, or bar. Phone, keys, wallet, and water always within reach.",
+      "brand": { "@type": "Brand", "name": "RIGG" },
+      "image": "https://r4v3n-lmb.github.io/RIGG/assets/20260319_0815_Active Lifestyle Collage_remix_01km2bqny4fc684tpsj5km2322.webp",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "ZAR",
+        "price": "499.99",
+        "availability": "https://schema.org/InStock",
+        "url": "https://r4v3n-lmb.github.io/RIGG/",
+        "seller": { "@type": "Organization", "name": "RIGG" }
+      }
+    }
+    </script>
   </head>
   <body data-launch="2026-04-30T23:59:00+02:00">
     <div class="announcement" role="status">
@@ -40,6 +75,7 @@
           <a class="nav-link" href="#video">Video</a>
           <a class="nav-link" href="#gallery">Gallery</a>
           <a class="nav-link" href="#preorder">Pricing</a>
+          <a class="nav-link" href="ambassadors.html">Athletes</a>
           <a class="nav-link nav-link-cta" href="#preorder">Order Now</a>
         </nav>
       </div>
@@ -482,6 +518,81 @@
           </div>
         </div>
       </section>
+      <section id="bundle" class="section bundle-section">
+        <div class="container">
+          <p class="section-eyebrow">Ecosystem Bundle</p>
+          <h2>Build your RIGG setup.</h2>
+          <p class="lead">Lock in launch pricing on your full ecosystem. Pay for Core today — accessories charged at your reserved price when they ship.</p>
+
+          <div class="bundle-grid">
+            <div class="bundle-items">
+
+              <div class="bundle-row bundle-row-required">
+                <div class="bundle-check bundle-check-fixed" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 8 7 12 13 4"/></svg>
+                </div>
+                <div class="bundle-info">
+                  <strong>RIGG Core</strong>
+                  <span>Sport carry system · Magnetic dock</span>
+                </div>
+                <div class="bundle-item-right">
+                  <span class="bundle-price">R499.99</span>
+                  <span class="bundle-ship">Ships now</span>
+                </div>
+              </div>
+
+              <div class="bundle-row bundle-addon" data-addon="bottle" data-price="179">
+                <button class="bundle-check" type="button" aria-pressed="false" aria-label="Add RIGG Bottle">
+                  <svg class="check-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 8 7 12 13 4"/></svg>
+                  <svg class="plus-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+                </button>
+                <div class="bundle-info">
+                  <strong>RIGG Bottle</strong>
+                  <span>Insulated · Designed for Core · Locks in</span>
+                </div>
+                <div class="bundle-item-right">
+                  <span class="bundle-price">R179.00</span>
+                  <span class="bundle-ship">Ships next</span>
+                </div>
+              </div>
+
+              <div class="bundle-row bundle-addon" data-addon="capsule" data-price="159">
+                <button class="bundle-check" type="button" aria-pressed="false" aria-label="Add RIGG Capsule">
+                  <svg class="check-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 8 7 12 13 4"/></svg>
+                  <svg class="plus-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/></svg>
+                </button>
+                <div class="bundle-info">
+                  <strong>RIGG Capsule</strong>
+                  <span>Modular supplement carry · Snaps in</span>
+                </div>
+                <div class="bundle-item-right">
+                  <span class="bundle-price">R159.00</span>
+                  <span class="bundle-ship">Ships Q3</span>
+                </div>
+              </div>
+
+              <div class="bundle-total-row">
+                <span class="bundle-saving-line" id="bundle-saving-line" style="display:none">Bundle saving: <strong id="bundle-saving-amount"></strong></span>
+                <span class="bundle-total-label">Total</span>
+                <span class="bundle-total-val" id="bundle-total">R499.99</span>
+              </div>
+
+            </div>
+
+            <div class="bundle-cta-panel">
+              <p class="bundle-cta-note">Accessories are invoiced separately at your locked-in price when they ship. No hidden charges.</p>
+              <div id="bundle-email-wrap" style="display:none">
+                <input type="email" id="bundle-email" class="bundle-email-input" placeholder="Email for accessory invoicing" aria-label="Email for accessory invoicing" />
+              </div>
+              <button class="button primary bundle-order-btn" id="bundle-order" type="button">Order Core &rarr;</button>
+              <div class="bundle-trust">
+                <span>Dispatches within 1–2 weeks</span>
+                <span>Fully refundable</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
   </main>
 
     <footer>
@@ -493,6 +604,7 @@
           <p class="small">Everything You Need. Nothing You Don't.</p>
           <div class="footer-links">
             <a href="mailto:noreply.rigg@gmail.com">Contact</a>
+            <a href="ambassadors.html">Athletes</a>
             <a href="#preorder">Refunds & FAQ</a>
           </div>
         </div>
@@ -556,6 +668,13 @@
         </div>
       </div>
     </div>
+
+    <!-- WhatsApp floating button -->
+    <a class="whatsapp-float" href="https://wa.me/27713102276?text=Hi+RIGG%2C+I%27d+like+to+know+more+about+the+Core+bag" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M20.4 3.6A11.8 11.8 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.3-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.6-8.4zM12 22c-1.9 0-3.7-.5-5.3-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A10 10 0 0 1 2 12C2 6.5 6.5 2 12 2s10 4.5 10 10-4.5 10-10 10zm5.4-7.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.4.1-.6l.5-.6.2-.4v-.4l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4C7.9 8.6 7 9.5 7 11.3s1.3 3.5 1.5 3.8c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.8.9.3 1.7.2 2.4.2.7-.1 2.2-.9 2.5-1.8.3-.9.3-1.6.2-1.8-.1-.2-.3-.3-.6-.4z"/>
+      </svg>
+    </a>
 
     <!-- Mobile sticky CTA bar — hidden on desktop via CSS -->
     <div class="mobile-cta-bar" id="mobile-cta-bar">

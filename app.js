@@ -521,6 +521,7 @@ if (document.readyState === "loading") {
     initMobileCta();
     initExitIntent();
     initBagPhoto();
+    initBundleBuilder();
   });
 } else {
   wireCtas();
@@ -528,6 +529,7 @@ if (document.readyState === "loading") {
   initMobileCta();
   initExitIntent();
   initBagPhoto();
+  initBundleBuilder();
 }
 updateOrderCount();
 
@@ -720,6 +722,78 @@ const initExitIntent = () => {
     if (joinBtn) { joinBtn.textContent = "You're on the list!"; joinBtn.disabled = true; }
     if (emailEl) { emailEl.disabled = true; emailEl.style.opacity = "0.4"; }
     setTimeout(close, 1800);
+  });
+};
+
+const initBundleBuilder = () => {
+  const addons = document.querySelectorAll(".bundle-addon");
+  const totalEl = document.getElementById("bundle-total");
+  const savingLine = document.getElementById("bundle-saving-line");
+  const savingAmountEl = document.getElementById("bundle-saving-amount");
+  const emailWrap = document.getElementById("bundle-email-wrap");
+  const emailInput = document.getElementById("bundle-email");
+  const orderBtn = document.getElementById("bundle-order");
+  if (!addons.length || !orderBtn) return;
+
+  const CORE = 499.99;
+  const FULL_BUNDLE_DISCOUNT = 30;
+
+  const selected = () => Array.from(addons).filter(el => el.dataset.selected === "true");
+
+  const refresh = () => {
+    const sel = selected();
+    let total = CORE + sel.reduce((s, el) => s + parseFloat(el.dataset.price), 0);
+    const saving = sel.length >= 2 ? FULL_BUNDLE_DISCOUNT : 0;
+    total -= saving;
+
+    if (totalEl) {
+      totalEl.textContent = `R${total.toFixed(2)}`;
+      totalEl.classList.add("updated");
+      setTimeout(() => totalEl.classList.remove("updated"), 600);
+    }
+    if (savingLine) savingLine.style.display = saving > 0 ? "" : "none";
+    if (savingAmountEl) savingAmountEl.textContent = `R${saving} off`;
+    if (emailWrap) emailWrap.style.display = sel.length > 0 ? "" : "none";
+    const label = sel.length > 0
+      ? `Order Core + Reserve ${sel.length} accessor${sel.length > 1 ? "ies" : "y"} →`
+      : "Order Core →";
+    if (orderBtn) orderBtn.textContent = label;
+  };
+
+  addons.forEach(row => {
+    row.addEventListener("click", (e) => {
+      if (e.target.closest("input")) return;
+      const isSelected = row.dataset.selected === "true";
+      row.dataset.selected = isSelected ? "false" : "true";
+      row.classList.toggle("selected", !isSelected);
+      const btn = row.querySelector(".bundle-check");
+      if (btn) btn.setAttribute("aria-pressed", String(!isSelected));
+      refresh();
+    });
+  });
+
+  orderBtn.addEventListener("click", async () => {
+    const sel = selected();
+    const email = emailInput?.value.trim();
+    if (sel.length > 0 && (!email || !email.includes("@"))) {
+      if (emailInput) { emailInput.style.borderColor = "#f87171"; emailInput.focus(); }
+      return;
+    }
+    if (emailInput) emailInput.style.borderColor = "";
+    orderBtn.disabled = true;
+    orderBtn.textContent = "Processing…";
+    if (db) {
+      try {
+        await db.collection("bundles").add({
+          core: true,
+          addons: sel.map(el => el.dataset.addon),
+          email: email || null,
+          status: "pending_payment",
+          created_at: new Date().toISOString(),
+        });
+      } catch (_) {}
+    }
+    window.location.href = "https://pay.yoco.com/r/2D9yPL";
   });
 };
 

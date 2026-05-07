@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://r4v3n-lmb.github.io/RIGG/sitemap.xml
