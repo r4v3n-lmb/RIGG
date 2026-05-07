@@ -187,42 +187,6 @@
 
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
-    <script>
-      const FIREBASE_CONFIG = {
-        apiKey: "AIzaSyBjVRr7gc8YYTmWrlL3qngWayXjMYdI2to",
-        authDomain: "rigg-ae114.firebaseapp.com",
-        projectId: "rigg-ae114",
-        storageBucket: "rigg-ae114.firebasestorage.app",
-        messagingSenderId: "22084213263",
-        appId: "1:22084213263:web:fd683d467cedd60076a17a",
-      };
-      let db = null;
-      if (window.firebase) {
-        window.firebase.initializeApp(FIREBASE_CONFIG);
-        db = window.firebase.firestore();
-      }
-
-      document.getElementById("ambassador-apply-btn")?.addEventListener("click", async () => {
-        const input = document.getElementById("ambassador-email");
-        const statusEl = document.getElementById("ambassador-status");
-        const email = input?.value.trim();
-        if (!email || !email.includes("@")) { input?.focus(); return; }
-        if (db) {
-          try {
-            await db.collection("ambassadors").add({ email, created_at: new Date().toISOString() });
-          } catch (_) {}
-        }
-        const btn = document.getElementById("ambassador-apply-btn");
-        if (btn) { btn.textContent = "Applied!"; btn.disabled = true; }
-        if (input) { input.disabled = true; input.style.opacity = "0.4"; }
-        if (statusEl) statusEl.textContent = "We'll be in touch — check your inbox.";
-      });
-
-      // Header scroll state
-      const siteHeader = document.querySelector(".site-header");
-      window.addEventListener("scroll", () => {
-        siteHeader?.classList.toggle("is-scrolled", window.scrollY > 10);
-      }, { passive: true });
-    </script>
+    <script src="app.js" defer></script>
   </body>
 </html>

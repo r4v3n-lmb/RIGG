@@ -248,13 +248,11 @@ const setupScrollReveals = () => {
 };
 
 try {
-  console.log("RIGG app.js loaded");
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initPricing);
   } else {
     initPricing();
   }
-  window.addEventListener("load", initPricing);
   setInterval(updateCountdown, 1000);
 } catch (error) {
   // Leave placeholders if something unexpected happens.
@@ -277,7 +275,7 @@ if (form) {
           personalization_type: personalization.type,
           personalization_text: personalization.text,
           status: "pending_payment",
-          created_at: new Date().toISOString(),
+          created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString(),
           source: window.location.pathname.includes("lp") ? "lp" : "main",
         });
         docId = ref.id;
@@ -405,14 +403,14 @@ if (ecosystemCards.length) {
       const product = btn.dataset.product;
       const emailInput = btn.closest(".detail-notify")?.querySelector(".detail-email");
       const email = emailInput?.value.trim();
-      if (!email || !email.includes("@")) {
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         if (emailInput) { emailInput.style.borderColor = "#f87171"; emailInput.focus(); }
         return;
       }
       if (emailInput) emailInput.style.borderColor = "";
       if (db) {
         try {
-          await db.collection("waitlists").add({ product, email, created_at: new Date().toISOString() });
+          await db.collection("waitlists").add({ product, email, created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString() });
         } catch (_) {}
       }
       btn.textContent = "You're on the list";
@@ -426,29 +424,6 @@ if (ecosystemCards.length) {
   });
 }
 
-const initFaqToggles = () => {
-  const faqItems = Array.from(document.querySelectorAll(".faq-item"));
-  const toggleFaq = (item) => {
-    const isExpanded = item.classList.toggle("expanded");
-    item.setAttribute("aria-expanded", isExpanded);
-  };
-
-  faqItems.forEach((item) => {
-    if (item.dataset.bound) return;
-    item.dataset.bound = "true";
-    item.setAttribute("aria-expanded", "false");
-    const question = item.querySelector(".faq-question");
-    if (question) {
-      question.addEventListener("click", () => toggleFaq(item));
-      question.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          toggleFaq(item);
-        }
-      });
-    }
-  });
-};
 
 const galleryTrack = document.querySelector(".gallery-track");
 if (galleryTrack) {
@@ -464,6 +439,7 @@ if (galleryTrack) {
   const lightbox = document.createElement("div");
   lightbox.className = "lightbox";
   const lightboxImg = document.createElement("img");
+  lightboxImg.alt = "";
   lightbox.appendChild(lightboxImg);
   document.body.appendChild(lightbox);
 
@@ -486,7 +462,8 @@ if (galleryTrack) {
 const wireCtas = () => {
   const candidates = document.querySelectorAll(".button, a[href='#preorder-form']");
   candidates.forEach((btn) => {
-    if (form && form.contains(btn)) return; // Skip actual submit button
+    if (form && form.contains(btn)) return;
+    if (btn.closest(".email-fallback, .newsletter-card, .member-modal, .build-modal")) return;
 
     const text = btn.textContent.toLowerCase();
     const shouldWire =
@@ -522,6 +499,7 @@ if (document.readyState === "loading") {
     initExitIntent();
     initBagPhoto();
     initBundleBuilder();
+    initAmbassadorApply();
   });
 } else {
   wireCtas();
@@ -530,6 +508,7 @@ if (document.readyState === "loading") {
   initExitIntent();
   initBagPhoto();
   initBundleBuilder();
+  initAmbassadorApply();
 }
 updateOrderCount();
 
@@ -582,9 +561,8 @@ const clarifyProduct = () => {
 window.addEventListener("DOMContentLoaded", clarifyProduct);
 
 const populateFAQ = () => {
-  const note = document.querySelector(".deposit-note");
-  if (!note) return;
-  const depositSection = note.parentElement;
+  const depositSection = document.querySelector(".form");
+  if (!depositSection) return;
 
   const faqs = [
     {
@@ -709,12 +687,12 @@ const initExitIntent = () => {
   document.getElementById("modal-join")?.addEventListener("click", async () => {
     const emailEl = document.getElementById("modal-email");
     const email = emailEl?.value.trim();
-    if (!email || !email.includes("@")) { emailEl?.focus(); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { emailEl?.focus(); return; }
     if (db) {
       try {
         await db.collection("waitlists").add({
           product: "core", email, discount: true,
-          source: "exit_intent", created_at: new Date().toISOString(),
+          source: "exit_intent", created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString(),
         });
       } catch (_) {}
     }
@@ -735,14 +713,13 @@ const initBundleBuilder = () => {
   const orderBtn = document.getElementById("bundle-order");
   if (!addons.length || !orderBtn) return;
 
-  const CORE = 499.99;
   const FULL_BUNDLE_DISCOUNT = 30;
 
   const selected = () => Array.from(addons).filter(el => el.dataset.selected === "true");
 
   const refresh = () => {
     const sel = selected();
-    let total = CORE + sel.reduce((s, el) => s + parseFloat(el.dataset.price), 0);
+    let total = getCurrentPrice() + sel.reduce((s, el) => s + parseFloat(el.dataset.price), 0);
     const saving = sel.length >= 2 ? FULL_BUNDLE_DISCOUNT : 0;
     total -= saving;
 
@@ -789,11 +766,34 @@ const initBundleBuilder = () => {
           addons: sel.map(el => el.dataset.addon),
           email: email || null,
           status: "pending_payment",
-          created_at: new Date().toISOString(),
+          created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString(),
         });
       } catch (_) {}
     }
     window.location.href = "https://pay.yoco.com/r/2D9yPL";
+  });
+};
+
+const initAmbassadorApply = () => {
+  const btn = document.getElementById("ambassador-apply-btn");
+  if (!btn) return;
+  btn.addEventListener("click", async () => {
+    const input = document.getElementById("ambassador-email");
+    const statusEl = document.getElementById("ambassador-status");
+    const email = input?.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { input?.focus(); return; }
+    if (db) {
+      try {
+        await db.collection("ambassadors").add({
+          email,
+          created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString(),
+        });
+      } catch (_) {}
+    }
+    btn.textContent = "Applied!";
+    btn.disabled = true;
+    if (input) { input.disabled = true; input.style.opacity = "0.4"; }
+    if (statusEl) statusEl.textContent = "We'll be in touch — check your inbox.";
   });
 };
 
@@ -817,7 +817,7 @@ const wireEmailFallback = () => {
     btn.dataset.wired = "true";
     btn.addEventListener("click", async () => {
       const email = input.value.trim();
-      if (!email || !email.includes("@")) {
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         input.style.borderColor = "#f87171";
         input.focus();
         return;
@@ -825,7 +825,7 @@ const wireEmailFallback = () => {
       input.style.borderColor = "";
       if (db) {
         try {
-          await db.collection("waitlists").add({ product: "core", email, created_at: new Date().toISOString() });
+          await db.collection("waitlists").add({ product: "core", email, created_at: window.firebase?.firestore?.FieldValue?.serverTimestamp() ?? new Date().toISOString() });
         } catch (_) {}
       }
       btn.textContent = "You're on the list";
